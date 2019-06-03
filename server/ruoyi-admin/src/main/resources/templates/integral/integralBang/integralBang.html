@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="container-div">
+    <!-- <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+        <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="integral:integralMenu:add">
+            <i class="fa fa-plus"></i> 添加
+        </a>
+        <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="integral:integralMenu:edit">
+            <i class="fa fa-edit"></i> 修改
+        </a>
+        <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="integral:integralMenu:remove">
+            <i class="fa fa-remove"></i> 删除
+        </a>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div> -->
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="integralBang-form">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>员工姓名： </label><input type="text" name="userName"/>
+                        </li>
+                        <li>
+                            <label>部门名称： </label><select name="deptId" th:with="dept=${@dept.getDept()}" class="form-control m-b-none">
+                            <option value="">所有</option>
+                            <option th:each="dept : ${dept}" th:text="${dept.deptName}" th:value="${dept.deptId}"></option>
+                        </select>
+                        </li>
+                        <li>
+                            <label>职位名称： </label><select name="postId" th:with="post=${@post.getPost()} " class="form-control m-b-none">
+                            <option value="">所有</option>
+                            <option th:each="post : ${post}" th:text="${post.postName}" th:value="${post.postId}"></option>
+                        </select>
+                        </li>
+                        <!--<li>
+                            <label>积分类型： </label><select name="integralTypeId" class="form-control m-b-none">
+                            <option value="">所有</option>
+                            <option value="1">品德A分</option>
+                            <option value="2">业绩B分</option>
+                            <option value="3">行为C分</option>
+                            <option value="">A/B分</option>
+                            <option value="">A/C分</option>
+                            <option value="">B/C分</option>
+                            <option value="">A/B/C分</option>
+                            <option value="">基础积分</option>
+                        </select>
+                        </li>-->
+                        <!-- <li class="select-time">
+                         <label>操作时间： </label>
+                         <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+                         <span>-</span>
+                         <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+                     </li>-->
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <!-- <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="integral:integralJk:importExcel">
+                <i class="fa fa-plus"></i> 添加
+            </a> -->
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/select/select2.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "integral/integralBang";
+
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            modalName: " 积分菜单管理",
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    formatter: function (value, row, index) {
+                        return index+ 1;
+                    }
+                },
+                {
+                    field : 'userName',
+                    title : '员工名称'
+                },
+                // {
+                //     field : 'avatar',
+                //     title : '员工头像'
+                // },
+                // {
+                //     field : 'avatar',
+                //     title : '员工头像',
+                //     formatter: function(value, row, index) {
+                //         if (value) {
+                //             return `<img src=${value} width="100" height="100"></img>`
+                //         } else {
+                //             return '没有上传头像'
+                //         }
+                //     }
+                // },
+                {
+                    field : 'deptName',
+                    title : '员工部门'
+                },
+                {
+                    field : 'postName',
+                    title : '员工职位'
+                },
+                // {
+                //     field : 'addIntegral',
+                //     title : '添加积分',
+                //     formatter: function (value) {
+                //         if (value == '' || value == '0') {
+                //             value = null
+                //         }
+                //         return value
+                //     }
+                // },
+                // {
+                //     field : 'delIntegral',
+                //     title : '扣除积分',
+                //     formatter: function (value) {
+                //         if (value == '' || value == '0') {
+                //             value = null
+                //         }
+                //         return value
+                //     }
+                // },
+                {
+                    field : 'countIntegral',
+                    title : '总积分'
+                },
+                {
+                    field : 'goodCountIntegral',
+                    title : '积分商城'
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

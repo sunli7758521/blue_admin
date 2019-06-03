@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="col-sm-12 search-collapse">
+			<form id="griveLike-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							<label>部门名称： </label>
+							<select name="params[userDeptId]" th:with="dept=${@dept.getDept()}"   >
+								<option value="">所有</option>
+								<option th:each="dept : ${dept}" th:text="${dept.deptName}" th:value="${dept.deptId}"></option>
+							</select>
+						</li>
+						<li>
+							<label>点赞姓名： </label><input type="text" name="userName"/>
+						</li>
+						<li>
+							<label>收益姓名： </label><input type="text" name="benUserName"/>
+						</li>
+
+						<li class="select-time">
+							<label>创建时间： </label>
+							<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+							<span>-</span>
+							<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="integral:giveLike:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="integral:giveLike:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="integral:giveLike:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>-->
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('integral:giveLike:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('integral:giveLike:remove')}]];
+        var prefix = ctx + "integral/giveLike";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "员工爱心点赞",
+                columns: [{
+		            checkbox: true
+		        },{
+                    formatter: function (value, row, index) {
+                        return index+ 1;
+                    }
+                },{
+                     field : 'deptName',
+                     title : '部门'
+                 },	{
+					field : 'benUserName',
+					title : '获得积分员工'
+				},
+                {
+					field : 'benImgPath',
+					title : '获得积分员工头像',
+                    formatter: function(value, row, index) {
+                        if (value) {
+                            return `<img src=${value} width="100" height="100"></img>`
+                        } else {
+                            return '没有上传头像'
+                        }
+                    }
+                 },{
+                        field : 'postName',
+                        title : '职称'
+                    },
+				{
+					field : 'userName',
+					title : '点赞员工'
+				},
+                {
+                    field : 'userImgPath',
+                    title : '点赞员工头像',
+                    formatter: function(value, row, index) {
+                        if (value) {
+                            return `<img src=${value} width="100" height="100"></img>`
+                        } else {
+                            return '没有上传头像'
+                        }
+                    }
+                },
+				{
+					field : 'loveIntegral', 
+					title : '爱心点赞' 
+				},
+				{
+					field : 'countIntefral', 
+					title : '总积分' 
+				},
+				{
+				    field : 'careateTime',
+                     title : '点赞时间'
+                 }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

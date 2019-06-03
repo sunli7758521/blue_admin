@@ -1,0 +1,150 @@
+   <!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+        <div class="col-sm-12 search-collapse">
+            <form id="operlog-form">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            姓名：<input type="text" name="userName"/>
+                        </li>
+
+                        <li>
+                            <label>审批状态： </label><select name="status" class="form-control m-b-none">
+                            <option value="">所有</option>
+                            <option value="0">审批中</option>
+                            <option value="1">已通过</option>
+                            <option value="2">未通过</option>
+                            <option value="3">已撤销</option>
+                             </select>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('integral:integralRecord:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('integral:integralRecord:remove')}]];
+        var successYes = [[${@permission.hasPermi('integral:integralRecord:success')}]];
+        var prefix = ctx + "integral/integralRecord";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                approvalUrl: prefix + "/success/{id}/{state}",
+                modalName: "商品兑换记录",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'recordId', 
+					title : '商品主键',
+                    visible: false
+				},
+                {
+                    formatter: function (value, row, index) {
+                        return index+ 1;
+                    }
+                },
+				{
+					field : 'recordName', 
+					title : '记录商品名称' 
+				},
+				{
+					field : 'recordImg', 
+					title : '记录商品封面',
+                    formatter: function(value, row, index) {
+                        if (value) {
+                            return `<img src=${value} style="max-height: 140px"></img>`
+                        } else {
+                            return '暂时没有图片'
+                        }
+                    }
+				},
+				{
+					field : 'dhIntegral', 
+					title : '兑换积分' 
+				},
+                    {
+                        field : 'deptName',
+                        title : '所属部门'
+                    },
+				{
+					field : 'userName', 
+					title : '兑换姓名' 
+				},
+				{
+					field : 'userPhone', 
+					title : '兑换人手机号' 
+				},
+				{
+					field : 'syIntegral', 
+					title : '剩余积分' 
+				},
+				{
+					field : 'dhCreateTime', 
+					title : '兑换时间' 
+				},
+				{
+					field : 'shTime', 
+					title : '审核时间' 
+				},
+				{
+					field : 'status', 
+					title : '状态',
+                    formatter: function (value) {
+                        switch (value) {
+                            case 0: return '<span class="badge badge-danger">未审批</span>';
+                            case 1: return '<span class="badge badge-info">已通过</span>';
+                            case 2: return '<span class="badge badge-success">未通过</span>';
+                        }
+                    }
+				},
+				/*{
+					field : 'gId', 
+					title : '商品id' 
+				},*/
+				{
+					field : 'remark', 
+					title : '备注' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	if (row.status == 0) {
+                            // actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.recordId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.recordId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            actions.push('<a class="btn btn-primary btn-xs ' + successYes + '" href="#" onclick="$.operate.approval(\'' + row.recordId + '\',1)"><i class="fa fa-key"></i>审批通过</a> ');
+                            actions.push('<a class="btn btn-success btn-xs ' + successYes + '" href="#" onclick="$.operate.approval(\'' + row.recordId + '\',2)"><i class="fa fa-key"></i>审批不过</a> ');
+                        } else {
+                            actions.push('<a class="btn btn-primary btn-xs disabled' + successYes + '" href="#" onclick="$.operate.approval(\'' + row.recordId + '\',1)"><i class="fa fa-key"></i>审批通过</a> ');
+                            actions.push('<a class="btn btn-success btn-xs disabled' + successYes + '" href="#" onclick="$.operate.approval(\'' + row.recordId + '\',2)"><i class="fa fa-key"></i>审批不过</a> ');
+                        }
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

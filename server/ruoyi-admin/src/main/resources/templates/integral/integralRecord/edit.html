@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralRecord-edit" th:object="${integralRecord}">
+            <input id="recordId" name="recordId" th:field="*{recordId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">记录商品名称：</label>
+                <div class="col-sm-8">
+                    <input id="recordName" name="recordName" th:field="*{recordName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">记录商品封面：</label>
+                <div class="col-sm-8">
+                    <input id="recordImg" name="recordImg" th:field="*{recordImg}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">兑换积分：</label>
+                <div class="col-sm-8">
+                    <input id="dhIntegral" name="dhIntegral" th:field="*{dhIntegral}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">兑换姓名：</label>
+                <div class="col-sm-8">
+                    <input id="userName" name="userName" th:field="*{userName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">兑换人手机号：</label>
+                <div class="col-sm-8">
+                    <input id="userPhone" name="userPhone" th:field="*{userPhone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">剩余积分：</label>
+                <div class="col-sm-8">
+                    <input id="syIntegral" name="syIntegral" th:field="*{syIntegral}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">兑换时间：</label>
+                <div class="col-sm-8">
+                    <input id="dhCreateTime" name="dhCreateTime" th:field="*{dhCreateTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">审核时间：</label>
+                <div class="col-sm-8">
+                    <input id="shTime" name="shTime" th:field="*{shTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">状态(0 审核中 1,审核通过 ，2审核不通过)：</label>
+                <div class="col-sm-8">
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">商品id：</label>
+                <div class="col-sm-8">
+                    <input id="gId" name="gId" th:field="*{gId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralRecord"
+		$("#form-integralRecord-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-integralRecord-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

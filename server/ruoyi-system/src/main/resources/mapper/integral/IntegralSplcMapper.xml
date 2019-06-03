@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralSplcMapper">
+    
+    <resultMap type="IntegralSplc" id="IntegralSplcResult">
+        <result property="lcId"    column="lc_id"    />
+        <result property="spName"    column="sp_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="creatTime"    column="creat_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectIntegralSplcVo">
+        select lc_id, sp_name, dept_id, creat_time, update_time, remark from integral_splc
+    </sql>
+	
+    <select id="selectIntegralSplcList" parameterType="IntegralSplc" resultMap="IntegralSplcResult">
+        <include refid="selectIntegralSplcVo"/>
+        <where>  
+            <if test="lcId != null "> and lc_id = #{lcId}</if>
+             <if test="spName != null  and spName != '' "> and sp_name = #{spName}</if>
+             <if test="deptId != null "> and dept_id = #{deptId}</if>
+             <if test="creatTime != null "> and creat_time = #{creatTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(creat_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(creat_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+    </select>
+    
+    <select id="selectIntegralSplcById" parameterType="Integer" resultMap="IntegralSplcResult">
+        <include refid="selectIntegralSplcVo"/>
+        where lc_id = #{lcId}
+    </select>
+        
+    <insert id="insertIntegralSplc" parameterType="IntegralSplc">
+        insert into integral_splc
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lcId != null  ">lc_id,</if>
+			<if test="spName != null  and spName != ''  ">sp_name,</if>
+			<if test="deptId != null  ">dept_id,</if>
+			<if test="creatTime != null  ">creat_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lcId != null  ">#{lcId},</if>
+			<if test="spName != null  and spName != ''  ">#{spName},</if>
+			<if test="deptId != null  ">#{deptId},</if>
+			<if test="creatTime != null  ">#{creatTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralSplc" parameterType="IntegralSplc">
+        update integral_splc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="spName != null  and spName != ''  ">sp_name = #{spName},</if>
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+            <if test="creatTime != null  ">creat_time = #{creatTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where lc_id = #{lcId}
+    </update>
+
+	<delete id="deleteIntegralSplcById" parameterType="Integer">
+        delete from integral_splc where lc_id = #{lcId}
+    </delete>
+	
+    <delete id="deleteIntegralSplcByIds" parameterType="String">
+        delete from integral_splc where lc_id in 
+        <foreach item="lcId" collection="array" open="(" separator="," close=")">
+            #{lcId}
+        </foreach>
+    </delete>
+    
+</mapper>

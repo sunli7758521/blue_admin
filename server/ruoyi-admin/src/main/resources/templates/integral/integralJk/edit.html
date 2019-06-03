@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralJk-edit" th:object="${integralJk}">
+            <!-- <input id="jkId" name="jkId" th:field="*{jkId}"  type="hidden"> -->
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">奖扣编号：</label>
+                <div class="col-sm-8">
+                    <input id="jkNum" name="jkNum" th:field="*{jkNum}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">奖扣员工姓名：</label>
+                <div class="col-sm-8">
+                    <input id="jkName" name="jkName" th:field="*{jkName}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">奖扣员工姓名：</label>
+                <div class="form-control-static" th:text="*{jkName}" >
+                </div>
+            </div>
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">奖扣人员姓名：</label>
+                <div class="col-sm-8">
+                    <input id="jkPhone" name="jkPhone" th:field="*{jkPhone}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">奖励员工部门：</label>
+                <div class="col-sm-8">
+                    <input id="deptId" name="deptId" th:field="*{deptId}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">奖励人员所属部门：</label>
+                <div class="col-sm-8">
+                    <input id="deptName" name="deptName" th:field="*{deptName}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">奖扣员工头像：</label>
+                <div class="col-sm-8">
+                    <input id="jkImg" name="jkImg" th:field="*{jkImg}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">奖扣员工头像：</label>
+                <img th:src="*{jkImg}" width="100" height="100" th:if="*{jkImg != null && jkImg != 0}">
+                <div th:if="*{jkImg == 0 || jkImg == null}">没有上传头像</div>
+            </div>
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">奖励积分：</label>
+                <div class="col-sm-8">
+                    <input id="jIntegral" name="jIntegral" th:field="*{jIntegral}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">奖励积分：</label>
+                <div class="form-control-static" th:text="*{jIntegral}" >
+                </div>
+            </div>
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">扣除积分：</label>
+                <div class="col-sm-8">
+                    <input id="kIntegral" name="kIntegral" th:field="*{kIntegral}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">扣除积分：</label>
+                <div class="form-control-static" th:text="*{kIntegral}" >
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label class="col-sm-2 control-label">积分类型：</label>
+                <div class="form-control-static" th:text="*{integralTypeId == 0 ? '品德A类' : (integralTypeId == 1 ? '业绩B类' : '行为C类')}">
+                </div>
+            </div> -->
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">奖扣时间：</label>
+                <div class="col-sm-8">
+                    <input id="jkTime" name="jkTime" th:field="*{jkTime}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">奖扣时间：</label>
+                <div class="form-control-static" th:text="*{#calendars.format(jkTime,'yyyy-MM-dd hh:mm:ss')}" >
+                </div>
+            </div>
+            <div class="form-group">    
+                <!-- <label class="col-sm-3 control-label">奖扣标题：</label>
+                <div class="col-sm-8">
+                    <input id="jkTitle" name="jkTitle" th:field="*{jkTitle}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">奖扣标题：</label>
+                <div class="form-control-static" th:text="*{jkTitle}" >
+                </div>
+            </div>
+            <div class="form-group">	
+                <!-- <label class="col-sm-3 control-label">积分奖扣描述：</label>
+                <div class="col-sm-8">
+                    <input id="jkDescribe" name="jkDescribe" th:field="*{jkDescribe}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">积分奖扣描述：</label>
+                <div class="form-control-static" th:text="*{jkDescribe}" >
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label class="col-sm-3 control-label">图片：</label>
+                <img th:each="img : *{}" th:src="*{img}" width="100" height="100" th:if="*{img != null && img != 0} ">
+                <div th:if="*{img == 0 || img == null}">没有上传图片</div>
+            </div> -->
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-8">
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">描述：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div> -->
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralJk"
+		$("#form-integralJk-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-integralJk-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

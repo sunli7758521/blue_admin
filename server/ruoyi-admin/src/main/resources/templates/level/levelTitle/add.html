@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-levelTitle-add">
+
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">题目名称：</label>
+				<div class="col-sm-8">
+				<!--	<input id="tName" name="tName" class="form-control" type="text">-->
+					<textarea id="tName" name="tName" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">积分奖励</label>
+				<div class="col-sm-8">
+					<input id="tIntegral" name="tIntegral" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">答案a：</label>
+				<div class="col-sm-8">
+					<!--<input id="tA" name="tA" class="form-control" type="text">-->
+					<textarea id="tA" name="tA" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">答案b：</label>
+				<div class="col-sm-8">
+					<!--<input id="tB" name="tB" class="form-control" type="text">-->
+					<textarea id="tB" name="tB" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">答案c：</label>
+				<div class="col-sm-8">
+				<!--	<input id="tC" name="tC" class="form-control" type="text">-->
+					<textarea id="tC" name="tC" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">答案d：</label>
+				<div class="col-sm-8">
+					<!--<input id="tD" name="tD" class="form-control" type="text">-->
+					<textarea id="tD" name="tD" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">正确答案：</label>
+				<div class="col-sm-8">
+					<select name="tEnd" class="form-control m-b-none">
+						<!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+						<option value="0">A</option>
+						<option value="1">B</option>
+						<option value="2">C</option>
+						<option value="3">D</option>
+					</select>
+				</div>
+			</div>
+			<input  id ="levelId" name="levelId" type="hidden" th:value="*{levelId}"/>
+		<!--	<input type="text" style="display:none"  name="state" id="state" value="${zhan.state }" class="form-control" />-->
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "level/levelTitle"
+		$("#form-levelTitle-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+	/*	function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-levelTitle-add').serialize());
+	        }
+	    }*/
+        function submitHandler() {
+            if ($.validate.form()) {
+                add();
+            }
+        }
+
+        function add() {
+            var tId = $("input[name='tId']").val();
+            var tName = $("textarea[name='tName']").val();
+            var tIntegral = $("input[name='tIntegral']").val();
+            var tA = $("textarea[name='tA']").val();
+            var tB = $("textarea[name='tB']").val();
+            var tC = $("textarea[name='tC']").val();
+            var tD = $("textarea[name='tD']").val();
+            var tEnd = $("select[name='tEnd'] option:selected").val();
+            var levelId = $("input[name='levelId']").val();
+
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/add",
+                data : {
+                    "tId": tId,
+                    "tName": tName,
+                    "tIntegral": tIntegral,
+                    "tA": tA,
+                    "tB": tB,
+                    "tC": tC,
+                    "tD": tD,
+                    "tEnd": tEnd,
+                    "levelId": levelId
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+
+
+
+	</script>
+</body>
+</html>

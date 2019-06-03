@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralJk-add">
+			<!--<div class="form-group">
+				<label class="col-sm-3 control-label">奖扣编号：</label>
+				<div class="col-sm-8">
+					<input id="jkNum" name="jkNum" class="form-control" type="text">
+				</div>
+			</div>-->
+			<div class="form-group">
+				<label class="col-sm-3 control-label">奖扣员工姓名：</label>
+				<div class="col-sm-8">
+					<select name="jkNames" class="form-control m-b-none">
+						<option value="">---请选择---</option>
+						<option th:each="jkName : ${jkNames}" th:text="${jkName.name}" th:value="${jkName.id}"></option>
+					</select>
+				</div>
+			</div>
+			<!--<div class="form-group">
+				<label class="col-sm-3 control-label">奖扣员工姓名：</label>
+				<div class="col-sm-8">
+					<select id="jkNames" name="jkNames" class="form-control m-b-none" multiple=""  th:with="jkNameGroup=${@jkNameGroup.getJkNameGroup()}">
+						<optgroup th:each="jkNameGroup:${jkNameGroup}" th:text="${jkNameGroup.deptName}">
+							&lt;!&ndash;<option th:each="jkName:${jkNameGroup.children}" th:value="${jkName.id}" th:text="${jkName.text}"></option>&ndash;&gt;
+						</optgroup>
+					</select>
+				</div>
+			</div>-->
+			<!--<div class="form-group">	-->
+				<!--<label class="col-sm-3 control-label">奖扣员工头像：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<input id="jkImg" name="jkImg" class="form-control" type="text">-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">奖励积分：</label>
+				<div class="col-sm-8">
+					<input id="jIntegral" name="jIntegral" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">扣除积分：</label>
+				<div class="col-sm-8">
+					<input id="kIntegral" name="kIntegral" class="form-control" type="text">
+				</div>
+			</div>
+			<!-- <div class="form-group">
+				<label class="col-sm-3 control-label">积分类型：</label>
+				<div class="col-sm-8">
+					<input id="typeId" name="typeId" class="form-control" type="text">
+				</div>
+			</div> -->
+			<!--<div class="form-group">-->
+				<!--<label class="col-sm-3 control-label">积分类型：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<select name="typeId" class="form-control m-b-none">-->
+	                    <!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+	                    <!--<option value="1">品德A类</option>-->
+	                    <!--<option value="2">业绩B类</option>-->
+	                    <!--<option value="3">行为C类</option>-->
+						<!--<option value="4">管理奖扣</option>-->
+	                <!--</select>-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class="form-group">
+				<label class="col-sm-3 control-label">积分类型：</label>
+				<div class="col-sm-8">
+					<select name="integralTypeId" th:field="*{integralTypeId}"  th:with="integrals=${@task.getIntegral()}" class="form-control m-b-none">
+						<option value="">所有</option>
+						<option th:each="task : ${integrals}" th:text="${task.typeName}" th:value="${task.typeId}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">奖扣标题：</label>
+				<div class="col-sm-8">
+					<input id="jkTitle" name="jkTitle" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">积分奖扣描述：</label>
+				<div class="col-sm-8">
+					<!-- <input id="jkDescribe" name="jkDescribe" class="form-control" type="text"> -->
+					<textarea id="jkDescribe" name="jkDescribe" class="form-control"></textarea>
+				</div>
+			</div>
+			<!-- <div class="form-group">	
+				<label class="col-sm-3 control-label">图片：</label>
+			</div> -->
+			<div class="form-group">
+				<label class="col-sm-3 control-label">奖扣时间：</label>
+				<div class="col-sm-8">
+					<!-- <input id="jkTime" name="jkTime" class="form-control" type="text"> -->
+					<input type="text" class="time-input form-control" id="jkTime" placeholder="奖扣时间" name="jkTime" style="width: 280px;"/>
+					<br/>
+					<p style="font-weight: bold;font-size: 12px;">
+						（如果不选择奖扣时间则默认为当前时间；可选择对应时间，校正积分，以确保某时段积分排名统计的准确性。)
+					</p>
+				</div>
+			</div>
+			<!-- <div class="form-group">	
+				<label class="col-sm-3 control-label">奖励员工部门id：</label>
+				<div class="col-sm-8">
+					<input id="deptId" name="deptId" class="form-control" type="text">
+				</div>
+			</div> -->
+			<!-- <div class="form-group">	
+				<label class="col-sm-3 control-label">奖励人员所属部门：</label>
+				<div class="col-sm-8">
+					<input id="deptName" name="deptName" class="form-control" type="text">
+				</div>
+			</div> -->
+			<!-- <div class="form-group">	
+				<label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8">
+					<input id="status" name="status" class="form-control" type="text">
+				</div>
+			</div> -->
+			<!-- <div class="form-group">	
+				<label class="col-sm-3 control-label">描述：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div> -->
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralJk"
+		$("#form-integralJk-add").validate({
+			rules:{
+				jkNames:{
+					required:true,
+				},
+				typeId:{
+					required:true,
+				},
+				jkTitle:{
+					required:true,
+				}
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-integralJk-add').serialize());
+	        }
+	    }
+
+	    layui.use('laydate', function() {
+	    	var laydate = layui.laydate
+	    	laydate.render({
+	    		elem: '#jkTime',
+				type: 'datetime',
+				value: new Date(),
+                theme: 'molv',
+				position: 'fixed'
+	    	})
+	    })
+	</script>
+</body>
+</html>

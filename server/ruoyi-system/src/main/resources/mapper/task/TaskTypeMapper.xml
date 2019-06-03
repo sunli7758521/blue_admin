@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.task.mapper.TaskTypeMapper">
+    
+    <resultMap type="TaskType" id="TaskTypeResult">
+        <result property="taskId"    column="task_id"    />
+        <result property="taskName"    column="task_name"    />
+    </resultMap>
+	
+	<sql id="selectTaskTypeVo">
+        select task_id, task_name from task_type
+    </sql>
+	
+    <select id="selectTaskTypeList" parameterType="TaskType" resultMap="TaskTypeResult">
+        <include refid="selectTaskTypeVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+             <if test="taskName != null  and taskName != '' "> and task_name = #{taskName}</if>
+         </where>
+    </select>
+    
+    <select id="selectTaskTypeById" parameterType="Integer" resultMap="TaskTypeResult">
+        <include refid="selectTaskTypeVo"/>
+        where task_id = #{taskId}
+    </select>
+        
+    <insert id="insertTaskType" parameterType="TaskType">
+        insert into task_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="taskId != null  ">task_id,</if>
+			<if test="taskName != null  and taskName != ''  ">task_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="taskId != null  ">#{taskId},</if>
+			<if test="taskName != null  and taskName != ''  ">#{taskName},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTaskType" parameterType="TaskType">
+        update task_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskName != null  and taskName != ''  ">task_name = #{taskName},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+	<delete id="deleteTaskTypeById" parameterType="Integer">
+        delete from task_type where task_id = #{taskId}
+    </delete>
+	
+    <delete id="deleteTaskTypeByIds" parameterType="String">
+        delete from task_type where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+    
+</mapper>

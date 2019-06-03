@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralAppExcelMapper">
+
+    <resultMap type="IntegralAppExcel" id="IntegralAppExcelResult">
+        <result property="number"    column="noId"/>
+        <result property="userName"    column="userName"/>
+        <result property="depName"    column="deptName"/>
+        <result property="postName"    column="userPost"/>
+        <result property="ainte"    column="a"/>
+        <result property="binte"    column="b"/>
+        <result property="cinte"    column="c"/>
+        <result property="maInte"    column="d"/>
+        <result property="freeInte"    column="e"/>
+        <result property="loveInte"    column="f"/>
+        <result property="checkInte"    column="g"/>
+        <result property="orInte"    column="h"/>
+        <result property="assessmentInte"    column="k"/>
+        <result property="basInte"    column="basics"/>
+        <result property="minusInte"    column="deduct"/>
+        <result property="count"    column="total"/>
+        <result property="ranking"    column="rank"/>
+    </resultMap>
+
+    <sql id="selectIntegralAppExcelVo">
+        SELECT
+           (@i :=@i + 1) AS noId, userId,userName,deptName,userPost,a,b,c,d,e,f,g,h,k,basics,deduct,(toto-deduct) as total,
+            @rownum := @rownum + 1 AS rank
+    </sql>
+
+    <select id="selectIaeTotal" parameterType="IntegralAppExcel" resultMap="IntegralAppExcelResult">
+        <include refid="selectIntegralAppExcelVo"/>
+        FROM
+            (
+                SELECT
+                    a.user_id AS userId,
+                    a.user_name AS userName,
+                    b.dept_name AS deptName,
+                    p.post_name AS userPost,
+                    SUM(IF(c.integral_type_id='1',c.sq_integral,0)) AS a,
+                    SUM(IF(c.integral_type_id='2',c.sq_integral,0)) AS b,
+                    SUM(IF(c.integral_type_id='3',c.sq_integral,0)) AS c,
+                    SUM(IF(c.integral_type_id='4',c.sq_integral,0)) AS d,
+                    SUM(IF(c.integral_type_id='5',c.sq_integral,0)) AS e,
+                    SUM(IF(c.integral_type_id='6',c.sq_integral,0)) AS f,
+                    SUM(IF(c.integral_type_id='7',c.sq_integral,0)) AS g,
+                    SUM(IF(c.integral_type_id='8',c.sq_integral,0)) AS h,
+                    SUM(IF(c.integral_type_id='9',c.sq_integral,0)) AS k,
+                    IFNULL(c.remark,0)  AS basics,
+                    IFNULL(SUM(c.k_integral),0)  AS deduct,
+                    (IFNULL(c.remark,0)+IFNULL(SUM(c.sq_integral),0))  AS toto
+                FROM
+                    sys_user a
+                INNER JOIN sys_dept b ON a.dept_id = b.dept_id
+                LEFT JOIN integral_approval c ON a.user_id = c.user_id
+                left join sys_user_post up on up.user_id = a.user_id
+                JOIN sys_post p  on p.post_id = up.post_id
+                WHERE
+                        a.integral_status = 1 AND
+                        c.status  = 1
+--                 a. STATUS = 0 and c. STATUS = 1
+                <if test="userName != null and userName != ''"> AND a.user_name like concat('%', #{userName}, '%')</if>
+                <if test="depName != null and depName != ''"> AND b.dept_id = #{depName}</if>
+                <if test="postName != null and postName != ''"> AND c.user_post = #{postName}</if>
+                <if test="typeId != null  and typeId != ''"> AND c.integral_type_id = #{typeId}</if>
+                <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                    and date_format(c.sp_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+                </if>
+                <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                    and date_format(c.sp_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+                </if>
+                GROUP BY
+                    a.user_id
+            ) t,
+            (
+                SELECT
+                    @rownum := 0
+            ) r,
+        (SELECT @i := 0) AS it
+        ORDER BY
+            total DESC
+    </select>
+
+</mapper>

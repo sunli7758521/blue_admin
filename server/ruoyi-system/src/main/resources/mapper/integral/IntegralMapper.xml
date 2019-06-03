@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralMapper">
+    
+    <resultMap type="Integral" id="IntegralResult">
+        <result property="integralId"    column="integral_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="countIntegral"    column="count_integral"    />
+        <result property="delIntegral"    column="del_integral"    />
+        <result property="addIntegral"    column="add_integral"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result column="good_count_integral" property="goodCountIntegral" />
+    </resultMap>
+	
+	<sql id="selectIntegralVo">
+        select integral_id, user_id, user_name, user_phone, count_integral, del_integral, add_integral, type_id, post_id, dept_id, good_count_integral  from integral
+    </sql>
+
+    <sql id="listVo" >
+        SELECT
+        integral.integral_id as integralId,
+        sys_user.user_name as userName,
+        integral.count_integral as countIntegral,
+        integral.good_count_integral as goodCountIntegral,
+        sys_dept.dept_name as deptName,
+        sys_post.post_name as postName
+        FROM
+            integral LEFT JOIN sys_user ON integral.user_id = sys_user.user_id LEFT JOIN sys_dept ON sys_user.dept_id = sys_dept.dept_id
+        LEFT JOIN sys_user_post ON sys_user.user_id = sys_user_post.user_id LEFT JOIN sys_post ON sys_user_post.post_id = sys_post.post_id
+    </sql>
+
+    <select id="selectIntegralList"  parameterType="Integral" resultType="com.ruoyi.integral.domain.Integral" >
+        <include refid="listVo"/>
+        <where>
+            and sys_user.integral_status = 1
+            <if test="userName != null  and userName != '' ">
+                AND sys_user.user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="postId != null ">
+                and sys_post.post_id = #{postId}
+            </if>
+            <if test="deptId != null ">
+                and sys_dept.dept_id = #{deptId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIntegralById" parameterType="Integer" resultMap="IntegralResult">
+        <include refid="selectIntegralVo"/>
+        where integral_id = #{integralId}
+    </select>
+
+    <insert id="insertIntegral" parameterType="Integral">
+        insert into integral
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="integralId != null  ">integral_id,</if>
+            <if test="userId != null  ">user_id,</if>
+            <if test="userName != null  and userName != ''  ">user_name,</if>
+            <if test="userPhone != null  and userPhone != ''  ">user_phone,</if>
+            <if test="countIntegral != null  ">count_integral,</if>
+            <if test="delIntegral != null  ">del_integral,</if>
+            <if test="addIntegral != null  ">add_integral,</if>
+            <if test="typeId != null  ">type_id,</if>
+            <if test="postId != null  ">post_id,</if>
+            <if test="deptId != null  ">dept_id,</if>
+            <if test="goodCountIntegral != null ">good_count_integral,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="integralId != null  ">#{integralId},</if>
+            <if test="userId != null  ">#{userId},</if>
+            <if test="userName != null  and userName != ''  ">#{userName},</if>
+            <if test="userPhone != null  and userPhone != ''  ">#{userPhone},</if>
+            <if test="countIntegral != null  ">#{countIntegral},</if>
+            <if test="delIntegral != null  ">#{delIntegral},</if>
+            <if test="addIntegral != null  ">#{addIntegral},</if>
+            <if test="typeId != null  ">#{typeId},</if>
+            <if test="postId != null  ">#{postId},</if>
+            <if test="deptId != null  ">#{deptId},</if>
+            <if test="goodCountIntegral != null ">#{goodCountIntegral},</if>
+        </trim>
+    </insert>
+
+    <update id="updateIntegral" parameterType="Integral">
+        update integral
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="userPhone != null  and userPhone != ''  ">user_phone = #{userPhone},</if>
+            <if test="countIntegral != null  ">count_integral = #{countIntegral},</if>
+            <if test="delIntegral != null  ">del_integral = #{delIntegral},</if>
+            <if test="addIntegral != null  ">add_integral = #{addIntegral},</if>
+            <if test="typeId != null  ">type_id = #{typeId},</if>
+            <if test="postId != null  ">post_id = #{postId},</if>
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+            <if test="goodCountIntegral != null ">good_count_integral = #{goodCountIntegral},</if>
+        </trim>
+        where integral_id = #{integralId}
+    </update>
+
+    <delete id="deleteIntegralById" parameterType="Integer">
+        delete from integral where integral_id = #{integralId}
+    </delete>
+	
+    <delete id="deleteIntegralByIds" parameterType="String">
+        delete from integral where integral_id in 
+        <foreach item="integralId" collection="array" open="(" separator="," close=")">
+            #{integralId}
+        </foreach>
+    </delete>
+    <!--AND user_name = #{name} todo-->
+    <select id="selectdanbiao"  resultMap="IntegralResult">
+        <include refid="selectIntegralVo"/>
+        where user_id = #{userId}
+    </select>
+
+
+    <select id="selectUsernameAndPhone"   resultMap="IntegralResult" >
+        select integral_id, user_id, user_name, user_phone, count_integral, del_integral, add_integral, type_id from integral
+         WHERE  user_name = #{userName}  AND  user_phone = #{phone}
+    </select>
+
+    <!--根据用户名查询积分-->
+    <select id="selectUserName" resultMap="IntegralResult" >
+        <include refid="selectIntegralVo"/>
+          WHERE user_name = #{userName}
+    </select>
+    <!---->
+    <select id="selectByUserId" resultMap="IntegralResult" >
+        <include refid="selectIntegralVo"/>
+        WHERE user_id = #{id}
+    </select>
+
+    <!-- 批量更新 -->
+    <insert id="insertOrUpdate" parameterType="java.util.List"  useGeneratedKeys="true" keyProperty= "integralId">
+        insert into integral (integral_id,user_id,user_name,user_phone,count_integral,del_integral,add_integral,type_id,post_id,dept_id,good_count_integral)
+        values
+        <foreach collection ="list" item="a" separator="," >
+            (#{a.integralId},#{a.userId},#{a.userName},#{a.userPhone},#{a.countIntegral},#{a.delIntegral},#{a.addIntegral},#{a.typeId},#{a.postId},#{a.deptId},#{a.goodCountIntegral})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        user_id = VALUES(user_id),user_name = VALUES(user_name),
+        user_phone = VALUES(user_phone),count_integral = VALUES(count_integral),
+        del_integral = VALUES(del_integral),add_integral = VALUES(add_integral),
+        type_id = VALUES(type_id),post_id = VALUES(post_id),
+        dept_id = VALUES(dept_id),good_count_integral = VALUES(good_count_integral)
+    </insert>
+    <!--按照部门、职位、用户查询 -->
+    <select id="findIntegralByDpu" resultMap="IntegralResult" parameterType="java.util.Map">
+        <include refid="selectIntegralVo"/>
+        WHERE user_id = #{map.userId}
+        AND dept_id = #{map.deptId}
+        AND post_id = #{map.postId}
+    </select>
+    <delete id="deleteIntegralByUserId" parameterType="Long">
+        DELETE from integral where integral.user_id in
+        <foreach collection="array" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

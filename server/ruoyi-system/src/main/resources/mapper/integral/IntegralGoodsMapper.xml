@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralGoodsMapper">
+    
+    <resultMap type="IntegralGoods" id="IntegralGoodsResult">
+        <result property="goodId"    column="good_id"    />
+        <result property="goodName"    column="good_name"    />
+        <result property="goodKc"    column="good_kc"    />
+        <result property="ydhNum"    column="ydh_num"    />
+        <result property="dhIntegral"    column="dh_integral"    />
+        <result property="status"    column="status"    />
+        <result property="goodLbImg"    column="good_lb_img"    />
+        <result property="goodDetails"    column="good_details"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="goodCount"    column="good_count"    />
+        <result property="goodImg"    column="good_img"    />
+    </resultMap>
+	
+	<sql id="selectIntegralGoodsVo">
+        select good_id, good_name, good_kc, ydh_num, dh_integral, status, good_lb_img, good_details, create_time, update_time, remark, good_count,good_img  from integral_goods
+    </sql>
+	
+    <select id="selectIntegralGoodsList" parameterType="IntegralGoods" resultMap="IntegralGoodsResult">
+        <include refid="selectIntegralGoodsVo"/>
+        <where>  
+            <if test="goodId != null "> and good_id = #{goodId}</if>
+             <if test="goodName != null  and goodName != '' "> and good_name = #{goodName}</if>
+             <if test="goodKc != null "> and good_kc = #{goodKc}</if>
+             <if test="ydhNum != null "> and ydh_num = #{ydhNum}</if>
+             <if test="dhIntegral != null "> and dh_integral = #{dhIntegral}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="goodLbImg != null  and goodLbImg != '' "> and good_lb_img = #{goodLbImg}</if>
+             <if test="goodDetails != null  and goodDetails != '' "> and good_details = #{goodDetails}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="goodCount != null  and  goodCount != '' "> and good_count = #{goodCount}</if>
+            <if test="goodImg != null  and  goodImg != '' "> and good_img = #{goodImg}</if>
+         </where>
+        order  by create_time desc
+    </select>
+    
+    <select id="selectIntegralGoodsById" parameterType="Integer" resultMap="IntegralGoodsResult">
+        <include refid="selectIntegralGoodsVo"/>
+        where good_id = #{goodId}
+    </select>
+        
+    <insert id="insertIntegralGoods" parameterType="IntegralGoods">
+        insert into integral_goods
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="goodId != null  ">good_id,</if>
+			<if test="goodName != null  and goodName != ''  ">good_name,</if>
+			<if test="goodKc != null  ">good_kc,</if>
+			<if test="ydhNum != null  ">ydh_num,</if>
+			<if test="dhIntegral != null  ">dh_integral,</if>
+			<if test="status != null  ">status,</if>
+			<if test="goodLbImg != null  and goodLbImg != ''  ">good_lb_img,</if>
+			<if test="goodDetails != null  and goodDetails != ''  ">good_details,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="goodCount != null  and  goodCount != '' ">good_count,</if>
+            <if test="goodImg != null  and  goodImg != '' ">good_img,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="goodId != null  ">#{goodId},</if>
+			<if test="goodName != null  and goodName != ''  ">#{goodName},</if>
+			<if test="goodKc != null  ">#{goodKc},</if>
+			<if test="ydhNum != null  ">#{ydhNum},</if>
+			<if test="dhIntegral != null  ">#{dhIntegral},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="goodLbImg != null  and goodLbImg != ''  ">#{goodLbImg},</if>
+			<if test="goodDetails != null  and goodDetails != ''  ">#{goodDetails},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="goodCount != null  and  goodCount != '' ">#{goodCount},</if>
+            <if test="goodImg != null  and  goodImg != '' ">#{goodImg},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralGoods" parameterType="IntegralGoods">
+        update integral_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodName != null  and goodName != ''  ">good_name = #{goodName},</if>
+            <if test="goodKc != null  ">good_kc = #{goodKc},</if>
+            <if test="ydhNum != null  ">ydh_num = #{ydhNum},</if>
+            <if test="dhIntegral != null  ">dh_integral = #{dhIntegral},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="goodLbImg != null  and goodLbImg != ''  ">good_lb_img = #{goodLbImg},</if>
+            <if test="goodDetails != null  and goodDetails != ''  ">good_details = #{goodDetails},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="goodCount != null  and  goodCount != '' ">good_count = #{goodCount},</if>
+            <if test="goodImg != null  and  goodImg != '' ">good_img = #{goodImg},</if>
+        </trim>
+        where good_id = #{goodId}
+    </update>
+
+	<delete id="deleteIntegralGoodsById" parameterType="Integer">
+        delete from integral_goods where good_id = #{goodId}
+    </delete>
+	
+    <delete id="deleteIntegralGoodsByIds" parameterType="String">
+        delete from integral_goods where good_id in 
+        <foreach item="goodId" collection="array" open="(" separator="," close=")">
+            #{goodId}
+        </foreach>
+    </delete>
+    
+</mapper>

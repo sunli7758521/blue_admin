@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralJkMapper">
+    
+    <resultMap type="IntegralJk" id="IntegralJkResult">
+        <result property="jkId"    column="jk_id"    />
+        <result property="jkNum"    column="jk_num"    />
+        <result property="jkTitle"    column="jk_title"    />
+        <result property="jkName"    column="jk_name"    />
+        <result property="jkPhone"    column="jk_phone"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="jkImg"    column="jk_img"    />
+        <result property="jIntegral"    column="j_integral"    />
+        <result property="kIntegral"    column="k_integral"    />
+        <result property="jkTime"    column="jk_time"    />
+        <result property="jkDescribe"    column="jk_describe"    />
+        <result property="status"    column="status"    />
+        <result property="typeId"    column="type_id"    />
+    </resultMap>
+	
+	<sql id="selectIntegralJkVo">
+        select jk_id, jk_num, jk_title, jk_name, jk_phone, dept_id, dept_name, jk_img, j_integral, k_integral, jk_time, jk_describe, status, remark, type_id  from integral_jk
+    </sql>
+	
+    <select id="selectIntegralJkList" parameterType="IntegralJk" resultMap="IntegralJkResult">
+        <include refid="selectIntegralJkVo"/>
+        <where>  
+            <if test="jkId != null "> and jk_id = #{jkId}</if>
+             <if test="jkNum != null  and jkNum != '' "> and jk_num = #{jkNum}</if>
+             <if test="jkTitle != null  and jkTitle != '' "> and jk_title = #{jkTitle}</if>
+             <if test="jkName != null  and jkName != '' "> and jk_name = #{jkName}</if>
+             <if test="jkPhone != null  and jkPhone != '' "> and jk_phone = #{jkPhone}</if>
+             <if test="deptId != null "> and dept_id = #{deptId}</if>
+             <if test="deptName != null  and deptName != '' "> and dept_name = #{deptName}</if>
+             <if test="jkImg != null  and jkImg != '' "> and jk_img = #{jkImg}</if>
+             <if test="jIntegral != null "> and j_integral = #{jIntegral}</if>
+             <if test="kIntegral != null "> and k_integral = #{kIntegral}</if>
+             <if test="jkTime != null "> and jk_time = #{jkTime}</if>
+             <if test="jkDescribe != null  and jkDescribe != '' "> and jk_describe = #{jkDescribe}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="typeId != null  and typeId != '' "> and type_id = #{typeId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(jk_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(jk_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+        order by jk_time desc
+    </select>
+    
+    <select id="selectIntegralJkById" parameterType="Integer" resultMap="IntegralJkResult">
+        <include refid="selectIntegralJkVo"/>
+        where jk_id = #{jkId}
+    </select>
+        
+    <insert id="insertIntegralJk" parameterType="IntegralJk">
+        insert into integral_jk
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="jkId != null  ">jk_id,</if>
+			<if test="jkNum != null  and jkNum != ''  ">jk_num,</if>
+			<if test="jkTitle != null  and jkTitle != ''  ">jk_title,</if>
+			<if test="jkName != null  and jkName != ''  ">jk_name,</if>
+			<if test="jkPhone != null  and jkPhone != ''  ">jk_phone,</if>
+			<if test="deptId != null  ">dept_id,</if>
+			<if test="deptName != null  and deptName != ''  ">dept_name,</if>
+			<if test="jkImg != null  and jkImg != ''  ">jk_img,</if>
+			<if test="jIntegral != null  ">j_integral,</if>
+			<if test="kIntegral != null  ">k_integral,</if>
+			<if test="jkTime != null  ">jk_time,</if>
+			<if test="jkDescribe != null  and jkDescribe != ''  ">jk_describe,</if>
+			<if test="status != null  ">status,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="typeId != null  and typeId != '' ">type_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="jkId != null  ">#{jkId},</if>
+			<if test="jkNum != null  and jkNum != ''  ">#{jkNum},</if>
+			<if test="jkTitle != null  and jkTitle != ''  ">#{jkTitle},</if>
+			<if test="jkName != null  and jkName != ''  ">#{jkName},</if>
+			<if test="jkPhone != null  and jkPhone != ''  ">#{jkPhone},</if>
+			<if test="deptId != null  ">#{deptId},</if>
+			<if test="deptName != null  and deptName != ''  ">#{deptName},</if>
+			<if test="jkImg != null  and jkImg != ''  ">#{jkImg},</if>
+			<if test="jIntegral != null  ">#{jIntegral},</if>
+			<if test="kIntegral != null  ">#{kIntegral},</if>
+			<if test="jkTime != null  ">#{jkTime},</if>
+			<if test="jkDescribe != null  and jkDescribe != ''  ">#{jkDescribe},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="typeId != null  and typeId != '' ">#{typeId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralJk" parameterType="IntegralJk">
+        update integral_jk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jkNum != null  and jkNum != ''  ">jk_num = #{jkNum},</if>
+            <if test="jkTitle != null  and jkTitle != ''  ">jk_title = #{jkTitle},</if>
+            <if test="jkName != null  and jkName != ''  ">jk_name = #{jkName},</if>
+            <if test="jkPhone != null  and jkPhone != ''  ">jk_phone = #{jkPhone},</if>
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+            <if test="deptName != null  and deptName != ''  ">dept_name = #{deptName},</if>
+            <if test="jkImg != null  and jkImg != ''  ">jk_img = #{jkImg},</if>
+            <if test="jIntegral != null  ">j_integral = #{jIntegral},</if>
+            <if test="kIntegral != null  ">k_integral = #{kIntegral},</if>
+            <if test="jkTime != null  ">jk_time = #{jkTime},</if>
+            <if test="jkDescribe != null  and jkDescribe != ''  ">jk_describe = #{jkDescribe},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="typeId != null  and typeId != '' ">type_id = #{typeId},</if>
+        </trim>
+        where jk_id = #{jkId}
+    </update>
+
+	<delete id="deleteIntegralJkById" parameterType="Integer">
+        delete from integral_jk where jk_id = #{jkId}
+    </delete>
+	
+    <delete id="deleteIntegralJkByIds" parameterType="String">
+        delete from integral_jk where jk_id in 
+        <foreach item="jkId" collection="array" open="(" separator="," close=")">
+            #{jkId}
+        </foreach>
+    </delete>
+
+    <!--查询部门分组人名-->
+    <select id="selectDeptAndUserName" resultType="map" >
+      SELECT  d.dept_name as  deptName, d.dept_id as deptId,  u.user_name as userName, u.user_id as userId  FROM
+      sys_dept d,sys_user u where  d.dept_id  = u.dept_id
+       GROUP BY d.dept_name , d.dept_id
+    </select>
+    
+</mapper>

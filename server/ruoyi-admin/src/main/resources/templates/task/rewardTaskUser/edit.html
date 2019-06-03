@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-rewardTaskUser-edit" th:object="${rewardTaskUser}">
+            <input id="rtuId" name="rtuId" th:field="*{rtuId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">任务标题主键：</label>
+                <div class="col-sm-8">
+                    <input id="rtId" name="rtId" th:field="*{rtId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">用户主键：</label>
+                <div class="col-sm-8">
+                    <input id="userId" name="userId" th:field="*{userId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">状态  0.抢单中，1.已完成，2.未抢单：</label>
+                <div class="col-sm-8">
+                    <input id="state" name="state" th:field="*{state}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">创建时间：</label>
+                <div class="col-sm-8">
+                    <input id="createDate" name="createDate" th:field="*{createDate}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "task/rewardTaskUser"
+		$("#form-rewardTaskUser-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-rewardTaskUser-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

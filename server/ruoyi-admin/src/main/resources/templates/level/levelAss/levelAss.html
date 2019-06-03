@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="add()" shiro:hasPermission="level:levelAss:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="level:levelAss:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="level:levelAss:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+	<div id="div"></div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('level:levelAss:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('level:levelAss:remove')}]];
+        var prefix = ctx + "level/levelAss";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "水平考核",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'levelId', 
+					title : '主键',
+                    visible: false
+				},
+                    {
+                        formatter: function (value, row, index) {
+                            return index+ 1;
+                        }
+                    },
+				{
+					field : 'assName', 
+					title : '考核名称'
+				},
+				{
+					field : 'sysDept.deptName',
+					title : '部门名称',
+                    width: 204
+				},
+                    {
+                        field : 'carateTime',
+                        title : '时间',
+                    },
+				{
+					field : 'typeId',
+					title : '行为类型',
+                    formatter: function (value, row, index) {
+                        switch (value) {
+                            case 0: return '品德A分管理';
+                            case 1: return '业绩B分管理';
+                            case 2: return '行为C分管理';
+                        }
+                    }
+				},
+                    {
+                        field : 'shenQingFangShi',
+                        title : '申请方式',
+                        formatter: function (value, row, index) {
+                            switch (value) {
+                                case '0': return '每天一次';
+                                case '1': return '每月一次';
+                                case '2': return '无限制';
+                                case '3': return '每周一次';
+                            }
+                        }
+                    },
+                    {
+                        field: 'state',
+                        title: '状态',
+                        formatter: function (value, row, index) {
+                            switch (value) {
+                                case '0' : return '<span class="badge badge-warning">使用中</span>';
+                                case '1' : return '<span class="badge badge-success">禁用</span>';
+                            }
+                        }
+                    },
+				{
+					field : 'remark',
+					title : '备注'
+				},
+                    {
+                        field : 'sysuser.userName',
+                        title : '操作人姓名'
+                    },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.levelId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+		            	actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.levelId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="ty(\'' + row.levelId + '|'+ row.state + '\')"><i class="fa fa-remove"></i>停用</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="quan(\'' + row.levelId + '\')"><i class="fa fa-refresh"></i>编辑题目</a> ');
+
+                      /* if (row.state == '0') {
+                            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="ty(\'' + row.levelId +'|'+ row.state + '\')"><i class="fa fa-remove"></i>停用</a>');
+                        }else if (row.state == '1') {
+                           actions.push('<a class="btn btn-primary btn-xs ' + removeFlag + '" href="#" onclick="ty(\'' + row.levelId +'|'+ row.state + '\')"><i class="fa fa-refresh"></i>启用</a>');
+                       }*/
+                        return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+
+        });
+        /** 禁用*/
+       function ty(params) {
+            params= params.split('|');
+            var levelId = null;
+            var state = null;
+            levelId = params[0];
+            state = params[1];
+            var url = prefix + '/level/'+ levelId+"/" + state;
+            $.operate.submit(url, "get", "json", "");
+
+        }
+        function add() {
+            var url = prefix + '/add/100';
+            $.modal.open("添加", url);
+
+        }
+
+        function quan(levelId) {
+            var url = "/level/levelTitle/listTitle" + '/'+levelId;
+            $.modal.open("添加题目", url);
+        }
+
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserDeptPostMapper">
+    
+    <resultMap type="SysUserDeptPost" id="SysUserDeptPostResult">
+        <result property="udId"    column="ud_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectSysUserDeptPostVo">
+        select ud_id, user_id, dept_id, create_time, update_time from sys_user_dept_post
+    </sql>
+
+    <select id="selectSysUserDeptPostList" parameterType="SysUserDeptPost" resultType="com.ruoyi.system.domain.SysUserDeptPost">
+        SELECT
+        sys_user_dept_post.ud_id as udId,
+        sys_user_dept_post.user_id as userId,
+        sys_user_dept_post.dept_id as deptId,
+        sys_user_dept_post.create_time as createTime,
+        sys_user_dept_post.update_time as updateTime,
+        sys_dept.dept_name as deptName,
+        sys_user.user_name as userName
+        FROM
+        sys_user_dept_post,sys_dept,sys_user
+        where sys_user_dept_post.dept_id = sys_dept.dept_id
+        and sys_user.user_id = sys_user_dept_post.user_id
+        and sys_user.status = 0
+            <if test="udId != null ">
+             and sys_user_dept_post.ud_id = #{udId}
+             </if>
+            <if test="userId != null ">
+             and sys_user_dept_post.user_id = #{userId}
+             </if>
+            <if test="deptId != null ">
+             and sys_user_dept_post.dept_id = #{deptId}
+             </if>
+    </select>
+<!--    <select id="selectSysUserDeptPostList" parameterType="SysUserDeptPost" resultMap="SysUserDeptPostResult">-->
+<!--        <include refid="selectSysUserDeptPostVo"/>-->
+<!--        <where>  -->
+<!--            <if test="udId != null "> and ud_id = #{udId}</if>-->
+<!--             <if test="userId != null "> and user_id = #{userId}</if>-->
+<!--             <if test="deptId != null "> and dept_id = #{deptId}</if>-->
+<!--             <if test="createTime != null "> and create_time = #{createTime}</if>-->
+<!--             <if test="updateTime != null "> and update_time = #{updateTime}</if>-->
+<!--         </where>-->
+<!--    </select>-->
+    
+    <select id="selectSysUserDeptPostById" parameterType="Integer" resultMap="SysUserDeptPostResult">
+        <include refid="selectSysUserDeptPostVo"/>
+        where ud_id = #{udId}
+    </select>
+        
+    <insert id="insertSysUserDeptPost" parameterType="SysUserDeptPost">
+        insert into sys_user_dept_post
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="udId != null  ">ud_id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="deptId != null  ">dept_id,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="udId != null  ">#{udId},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="deptId != null  ">#{deptId},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateSysUserDeptPost" parameterType="SysUserDeptPost">
+        update sys_user_dept_post
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where ud_id = #{udId}
+    </update>
+
+	<delete id="deleteSysUserDeptPostById" parameterType="Integer">
+        delete from sys_user_dept_post where ud_id = #{udId}
+    </delete>
+	
+    <delete id="deleteSysUserDeptPostByIds" parameterType="String">
+        delete from sys_user_dept_post where ud_id in 
+        <foreach item="udId" collection="array" open="(" separator="," close=")">
+            #{udId}
+        </foreach>
+    </delete>
+    <!--通过用户id 删处他所管的 部门id-->
+    <delete id="delectByUserId" >
+        DELETE FROM sys_user_dept_post where sys_user_dept_post.user_id = #{userId}
+    </delete>
+    <!--通过用户id 查询所有本人所管理的部门-->
+    <select id="selectByUserId" resultMap="SysUserDeptPostResult" >
+        <include refid="selectSysUserDeptPostVo"/>
+        where user_id = #{userId}
+    </select>
+    <!-- 查看 所管理的部门  -->
+    <select id="selectUserDepts" resultType="com.ruoyi.system.domain.SysUserDeptPost">
+        SELECT
+        sys_user_dept_post.ud_id as udId,
+        sys_user_dept_post.user_id as userId,
+        sys_user_dept_post.dept_id as deptId,
+        sys_user_dept_post.create_time as createTime,
+        sys_user_dept_post.update_time as updateTime,
+        sys_dept.dept_name as deptName,
+        sys_user.user_name as userName
+        FROM
+            sys_user_dept_post,sys_dept,sys_user
+        where sys_user_dept_post.dept_id = sys_dept.dept_id
+        and sys_user.user_id = sys_user_dept_post.user_id
+        and sys_user.status = 0
+        <if test="userId !=null">
+         and   sys_user.user_id =#{userId}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.GiveLikeMapper">
+
+    <resultMap type="GiveLike" id="GiveLikeResult">
+        <result property="dId"    column="d_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="benefitId"    column="benefit_id"    />
+        <result property="careateTime"    column="careate_time"    />
+        <result property="loveIntegral"    column="love_Integral"    />
+        <result property="countIntefral"    column="count_Intefral"    />
+    </resultMap>
+
+    <sql id="selectGiveLikeVo">
+        select d_id, user_id, benefit_id, careate_time, love_Integral, count_Intefral from give_like
+    </sql>
+
+    <select id="selectGiveLikeList" parameterType="GiveLike" resultMap="GiveLikeResult">
+        <include refid="selectGiveLikeVo"/>
+        <where>
+            <if test="dId != null "> and d_id = #{dId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="benefitId != null "> and benefit_id = #{benefitId}</if>
+            <if test="careateTime != null "> and careate_time = #{careateTime}</if>
+            <if test="loveIntegral != null "> and love_Integral = #{loveIntegral}</if>
+            <if test="countIntefral != null "> and count_Intefral = #{countIntefral}</if>
+        </where>
+    </select>
+
+    <select id="selectGiveLikeById" parameterType="Integer" resultMap="GiveLikeResult">
+        <include refid="selectGiveLikeVo"/>
+        where d_id = #{dId}
+    </select>
+
+    <insert id="insertGiveLike" parameterType="GiveLike">
+        insert into give_like
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dId != null  ">d_id,</if>
+            <if test="userId != null  ">user_id,</if>
+            <if test="benefitId != null  ">benefit_id,</if>
+            <if test="careateTime != null  ">careate_time,</if>
+            <if test="loveIntegral != null  ">love_Integral,</if>
+            <if test="countIntefral != null  ">count_Intefral,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dId != null  ">#{dId},</if>
+            <if test="userId != null  ">#{userId},</if>
+            <if test="benefitId != null  ">#{benefitId},</if>
+            <if test="careateTime != null  ">#{careateTime},</if>
+            <if test="loveIntegral != null  ">#{loveIntegral},</if>
+            <if test="countIntefral != null  ">#{countIntefral},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGiveLike" parameterType="GiveLike">
+        update give_like
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="benefitId != null  ">benefit_id = #{benefitId},</if>
+            <if test="careateTime != null  ">careate_time = #{careateTime},</if>
+            <if test="loveIntegral != null  ">love_Integral = #{loveIntegral},</if>
+            <if test="countIntefral != null  ">count_Intefral = #{countIntefral},</if>
+        </trim>
+        where d_id = #{dId}
+    </update>
+
+    <delete id="deleteGiveLikeById" parameterType="Integer">
+        delete from give_like where d_id = #{dId}
+    </delete>
+
+    <delete id="deleteGiveLikeByIds" parameterType="String">
+        delete from give_like where d_id in
+        <foreach item="dId" collection="array" open="(" separator="," close=")">
+            #{dId}
+        </foreach>
+    </delete>
+    <resultMap type="GiveLike" id="GiveLikeResult1">
+        <result property="dId"    column="d_id"    />
+        <result property="userName"    column="dzUserName"    />
+        <result property="userImgPath"    column="userImgPath"    />
+        <result property="benUserName"    column="syrUserName"    />
+        <result property="benImgPath"    column="benImgPath"    />
+        <result property="careateTime"    column="careate_time"    />
+        <result property="loveIntegral"    column="love_Integral"    />
+        <result property="countIntefral"    column="count_Intefral"    />
+        <result property="postName"    column="post_name"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+    <select id="findGiveLikeByUserId" parameterType="GiveLike" resultMap="GiveLikeResult1">
+        SELECT
+            a.d_id,
+            b.user_name dzUserName,
+            b.avatar userImgPath,
+            c.user_name syrUserName,
+            c.avatar  benImgPath,
+            a.love_Integral,
+            a.count_Intefral,
+            a.careate_time,
+            e.post_name,
+            f.dept_name
+        FROM
+            give_like a,
+            sys_user b,
+            sys_user c,
+            sys_user_post d,
+            sys_post e,
+            sys_dept f
+        WHERE
+            a.user_id = b.user_id
+            AND a.benefit_id = c.user_id
+            AND d.user_id = a.benefit_id
+            AND a.benefit_id = d.user_id
+            AND d.post_id = e.post_id
+            AND f.dept_id = b.dept_id
+        <if test="userName != null   and userName != ''">  AND b.user_name = #{userName}</if>
+        <if test="benUserName != null   and benUserName != ''">  AND c.user_name= #{benUserName}</if>
+        <if test="params.userDeptId != null and params.userDeptId != ''">  AND f.dept_id= #{params.userDeptId}</if>
+        <if test="params.userPostId != null and params.userPostId != ''">  AND e.post_id= #{params.userPostId}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND date_format(a.careate_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND date_format(a.careate_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </select>
+</mapper>

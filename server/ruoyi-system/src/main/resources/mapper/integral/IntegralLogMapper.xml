@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralLogMapper">
+    
+    <resultMap type="IntegralLog" id="IntegralLogResult">
+        <result property="logId"    column="log_id"    />
+        <result property="approvalNum"    column="approval_num"    />
+        <result property="userId"    column="user_id"    />
+        <result property="integralId"    column="integral_id"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userImg"    column="user_img"    />
+        <result property="userDept"    column="user_dept"    />
+        <result property="userPost"    column="user_post"    />
+        <result property="integralTitle"    column="integral_title"    />
+        <result property="integralContent"    column="integral_content"    />
+        <result property="bianIntegral"    column="bian_integral"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="getTime"    column="get_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="kIntegral"    column="k_integral"    />
+    </resultMap>
+	
+	<sql id="selectIntegralLogVo">
+        select log_id, approval_num, user_id, integral_id, user_phone, user_name, user_img, user_dept, user_post, integral_title, integral_content, bian_integral, type_id, get_time, status, remark, k_integral  from integral_log
+    </sql>
+	
+    <select id="selectIntegralLogList" parameterType="IntegralLog" resultMap="IntegralLogResult">
+        <include refid="selectIntegralLogVo"/>
+        <where>  
+            <if test="logId != null "> and log_id = #{logId}</if>
+            <if test="integralTitle != null  and integralTitle != '' ">
+                and integral_title  like concat('%', #{integralTitle}, '%')
+            </if>
+
+             <if test="approvalNum != null  and approvalNum != '' "> and approval_num = #{approvalNum}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="integralId != null "> and integral_id = #{integralId}</if>
+             <if test="userPhone != null "> and user_phone = #{userPhone}</if>
+             <if test="userName != null  and userName != '' ">
+                 and user_name like concat('%', #{userName}, '%')
+             </if>
+             <if test="userImg != null  and userImg != '' "> and user_img = #{userImg}</if>
+             <if test="userDept != null  and userDept != '' ">
+                 and user_dept  like concat('%', #{userDept}, '%')
+             </if>
+             <if test="userPost != null  and userPost != '' "> and user_post = #{userPost}</if>
+             <if test="integralContent != null  and integralContent != '' "> and integral_content = #{integralContent}</if>
+             <if test="bianIntegral != null "> and bian_integral = #{bianIntegral}</if>
+             <if test="typeId != null "> and type_id = #{typeId}</if>
+             <if test="getTime != null "> and get_time = #{getTime}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="kIntegral != null  and kIntegral != '' "> and k_integral = #{kIntegral}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(get_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(get_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+         </where>
+        order by get_time desc
+    </select>
+    
+    <select id="selectIntegralLogById" parameterType="Integer" resultMap="IntegralLogResult">
+        <include refid="selectIntegralLogVo"/>
+        where log_id = #{logId}
+    </select>
+        
+    <insert id="insertIntegralLog" parameterType="IntegralLog">
+        insert into integral_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="logId != null  ">log_id,</if>
+			<if test="approvalNum != null  and approvalNum != ''  ">approval_num,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="integralId != null  ">integral_id,</if>
+			<if test="userPhone != null  ">user_phone,</if>
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="userImg != null  and userImg != ''  ">user_img,</if>
+			<if test="userDept != null  and userDept != ''  ">user_dept,</if>
+			<if test="userPost != null  and userPost != ''  ">user_post,</if>
+			<if test="integralTitle != null  and integralTitle != ''  ">integral_title,</if>
+			<if test="integralContent != null  and integralContent != ''  ">integral_content,</if>
+			<if test="bianIntegral != null  ">bian_integral,</if>
+			<if test="typeId != null  ">type_id,</if>
+			<if test="getTime != null  ">get_time,</if>
+			<if test="status != null  ">status,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">k_Integral,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="logId != null  ">#{logId},</if>
+			<if test="approvalNum != null  and approvalNum != ''  ">#{approvalNum},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="integralId != null  ">#{integralId},</if>
+			<if test="userPhone != null  ">#{userPhone},</if>
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="userImg != null  and userImg != ''  ">#{userImg},</if>
+			<if test="userDept != null  and userDept != ''  ">#{userDept},</if>
+			<if test="userPost != null  and userPost != ''  ">#{userPost},</if>
+			<if test="integralTitle != null  and integralTitle != ''  ">#{integralTitle},</if>
+			<if test="integralContent != null  and integralContent != ''  ">#{integralContent},</if>
+			<if test="bianIntegral != null  ">#{bianIntegral},</if>
+			<if test="typeId != null  ">#{typeId},</if>
+			<if test="getTime != null  ">#{getTime},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">#{kIntegral},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralLog" parameterType="IntegralLog">
+        update integral_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="approvalNum != null  and approvalNum != ''  ">approval_num = #{approvalNum},</if>
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="integralId != null  ">integral_id = #{integralId},</if>
+            <if test="userPhone != null  ">user_phone = #{userPhone},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="userImg != null  and userImg != ''  ">user_img = #{userImg},</if>
+            <if test="userDept != null  and userDept != ''  ">user_dept = #{userDept},</if>
+            <if test="userPost != null  and userPost != ''  ">user_post = #{userPost},</if>
+            <if test="integralTitle != null  and integralTitle != ''  ">integral_title = #{integralTitle},</if>
+            <if test="integralContent != null  and integralContent != ''  ">integral_content = #{integralContent},</if>
+            <if test="bianIntegral != null  ">bian_integral = #{bianIntegral},</if>
+            <if test="typeId != null  ">type_id = #{typeId},</if>
+            <if test="getTime != null  ">get_time = #{getTime},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">k_Integral = #{kIntegral},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+	<delete id="deleteIntegralLogById" parameterType="Integer">
+        delete from integral_log where log_id = #{logId}
+    </delete>
+	
+    <delete id="deleteIntegralLogByIds" parameterType="String">
+        delete from integral_log where log_id in 
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+<!--    &lt;!&ndash;审批日志 导出 &ndash;&gt;-->
+<!--    <select id="selectIntegralLogExportList" parameterType="IntegralLog" resultType="com.ruoyi.integral.domain.IntegralLogExport" >-->
+
+<!--    </select>-->
+</mapper>

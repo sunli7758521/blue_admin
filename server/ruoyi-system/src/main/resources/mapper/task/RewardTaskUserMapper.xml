@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.task.mapper.RewardTaskUserMapper">
+    
+    <resultMap type="RewardTaskUser" id="RewardTaskUserResult">
+        <result property="rtuId"    column="rtu_id"    />
+        <result property="rtId"    column="rt_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="state"    column="state"    />
+        <result property="createDate"    column="create_date"    />
+    </resultMap>
+	
+	<sql id="selectRewardTaskUserVo">
+        select rtu_id, rt_id, user_id, state, create_date from reward_task_user
+    </sql>
+	
+    <select id="selectRewardTaskUserList" parameterType="RewardTaskUser" resultMap="RewardTaskUserResult">
+        <include refid="selectRewardTaskUserVo"/>
+        <where>  
+            <if test="rtuId != null "> and rtu_id = #{rtuId}</if>
+             <if test="rtId != null "> and rt_id = #{rtId}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="state != null  and state != '' "> and state = #{state}</if>
+             <if test="createDate != null "> and create_date = #{createDate}</if>
+         </where>
+    </select>
+    
+    <select id="selectRewardTaskUserById" parameterType="Integer" resultMap="RewardTaskUserResult">
+        <include refid="selectRewardTaskUserVo"/>
+        where rtu_id = #{rtuId}
+    </select>
+        
+    <insert id="insertRewardTaskUser" parameterType="RewardTaskUser">
+        insert into reward_task_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="rtuId != null  ">rtu_id,</if>
+			<if test="rtId != null  ">rt_id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="state != null  and state != ''  ">state,</if>
+			<if test="createDate != null  ">create_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="rtuId != null  ">#{rtuId},</if>
+			<if test="rtId != null  ">#{rtId},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="state != null  and state != ''  ">#{state},</if>
+			<if test="createDate != null  ">#{createDate},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateRewardTaskUser" parameterType="RewardTaskUser">
+        update reward_task_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rtId != null  ">rt_id = #{rtId},</if>
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="state != null  and state != ''  ">state = #{state},</if>
+            <if test="createDate != null  ">create_date = #{createDate},</if>
+        </trim>
+        where rtu_id = #{rtuId}
+    </update>
+
+	<delete id="deleteRewardTaskUserById" parameterType="Integer">
+        delete from reward_task_user where rtu_id = #{rtuId}
+    </delete>
+	
+    <delete id="deleteRewardTaskUserByIds" parameterType="String">
+        delete from reward_task_user where rtu_id in 
+        <foreach item="rtuId" collection="array" open="(" separator="," close=")">
+            #{rtuId}
+        </foreach>
+    </delete>
+    
+</mapper>

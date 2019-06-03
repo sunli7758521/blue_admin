@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.MenuDeptMapper">
+    
+    <resultMap type="MenuDept" id="MenuDeptResult">
+        <result property="menuDeptId"    column="menu_dept_id"    />
+        <result property="menuId"    column="menu_id"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+	
+	<sql id="selectMenuDeptVo">
+        select menu_dept_id, menu_id, dept_id from menu_dept
+    </sql>
+	
+    <select id="selectMenuDeptList" parameterType="MenuDept" resultMap="MenuDeptResult">
+        <include refid="selectMenuDeptVo"/>
+        <where>  
+            <if test="menuDeptId != null "> and menu_dept_id = #{menuDeptId}</if>
+             <if test="menuId != null "> and menu_id = #{menuId}</if>
+             <if test="deptId != null "> and dept_id = #{deptId}</if>
+         </where>
+    </select>
+    
+    <select id="selectMenuDeptById" parameterType="Long" resultMap="MenuDeptResult">
+        <include refid="selectMenuDeptVo"/>
+        where menu_dept_id = #{menuDeptId}
+    </select>
+        
+    <insert id="insertMenuDept" parameterType="MenuDept">
+        insert into menu_dept
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="menuDeptId != null  ">menu_dept_id,</if>
+			<if test="menuId != null  ">menu_id,</if>
+			<if test="deptId != null  ">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="menuDeptId != null  ">#{menuDeptId},</if>
+			<if test="menuId != null  ">#{menuId},</if>
+			<if test="deptId != null  ">#{deptId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMenuDept" parameterType="MenuDept">
+        update menu_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="menuId != null  ">menu_id = #{menuId},</if>
+            <if test="deptId != null  ">dept_id = #{deptId},</if>
+        </trim>
+        where menu_dept_id = #{menuDeptId}
+    </update>
+
+	<delete id="deleteMenuDeptById" parameterType="Long">
+        delete from menu_dept where menu_dept_id = #{menuDeptId}
+    </delete>
+	
+    <delete id="deleteMenuDeptByIds" parameterType="String">
+        delete from menu_dept where menu_dept_id in 
+        <foreach item="menuDeptId" collection="array" open="(" separator="," close=")">
+            #{menuDeptId}
+        </foreach>
+    </delete>
+    <!-- 通过积分项关联查询 部门 -->
+    <select id="selectMenuDeptByMenuId" resultType="String" >
+        SELECT
+        sys_dept.dept_name as deptName
+        FROM
+            xw_integral,
+            menu_dept ,
+        sys_dept
+        where xw_integral.behavior_id = menu_dept.menu_id
+        AND menu_dept.dept_id = sys_dept.dept_id
+        <if test="behaviorId !=null and behaviorId !=''" >
+            and xw_integral.behavior_id = #{behaviorId}
+        </if>
+    </select>
+    <!-- 通过积分项id 批量删除关联部门 -->
+    <select id="deleteMenuDeptByMenuIds" parameterType="Long" resultType="Integer">
+        delete from menu_dept where menu_id = #{menuIds}
+    </select>
+    <!-- 删除关联部门 -->
+    <delete id="deleteByMenuIds" parameterType="String" >
+        delete from menu_dept where menu_id in
+        <foreach item="menuIds" collection="array" open="(" separator="," close=")">
+            #{menuIds}
+        </foreach>
+    </delete>
+
+</mapper>

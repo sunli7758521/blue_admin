@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-levelTitle-edit" th:object="${levelTitle}">
+            <input id="tId" name="tId" th:field="*{tId}"  type="hidden">
+            <input  id ="levelId" name="levelId" type="hidden" th:field="*{levelId}"/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">题目名称：</label>
+                <div class="col-sm-8">
+                   <!-- <input id="tName" name="tName" th:field="*{tName}" class="form-control" type="text">-->
+                    <textarea id="tName" name="tName" class="form-control" th:text="*{tName}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">奖励积分：</label>
+                <div class="col-sm-8">
+                    <input id="tIntegral" name="tIntegral" th:field="*{tIntegral}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">答案A：</label>
+                <div class="col-sm-8">
+                   <!-- <input id="tA" name="tA" th:field="*{tA}" class="form-control" type="text">-->
+                    <textarea id="tA" name="tA" class="form-control" th:text="*{tA}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">答案B：</label>
+                <div class="col-sm-8">
+                  <!--  <input id="tB" name="tB" th:field="*{tB}" class="form-control" type="text">-->
+                    <textarea id="tB" name="tB" class="form-control" th:text="*{tB}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">答案C：</label>
+                <div class="col-sm-8">
+                 <!--   <input id="tC" name="tC" th:field="*{tC}" class="form-control" type="text">-->
+                    <textarea id="tC" name="tC" class="form-control" th:text="*{tC}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">答案D：</label>
+                <div class="col-sm-8">
+                  <!--  <input id="tD" name="tD" th:field="*{tD}" class="form-control" type="text">-->
+                    <textarea id="tD" name="tD" class="form-control" th:text="*{tD}"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">时间：</label>
+                <div class="col-sm-8">
+                    <input id="catabTime" name="catabTime" th:field="*{catabTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">正确答案：</label>
+                <div class="col-sm-8">
+                    <select name="tEnd" class="form-control m-b-none" th:field="*{tEnd}">
+                    <!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                    <option value="2">C</option>
+                    <option value="3">D</option>
+                </select>
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "level/levelTitle"
+		$("#form-levelTitle-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	           /* $.operate.save(prefix + "/edit", $('#form-levelTitle-edit').serialize());*/
+                edit();
+	        }
+	    }
+
+        function edit(){
+            var tId = $("input[name='tId']").val();
+            var tName = $("textarea[name='tName']").val();
+            var tIntegral = $("input[name='tIntegral']").val();
+            var tA = $("textarea[name='tA']").val();
+            var tB = $("textarea[name='tB']").val();
+            var tC = $("textarea[name='tC']").val();
+            var tD = $("textarea[name='tD']").val();
+            var tEnd = $("select[name='tEnd'] option:selected").val();
+            var levelId = $("input[name='levelId']").val();
+
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "level/levelTitle/edit",
+                data : {
+                    "tId": tId,
+                    "tName": tName,
+                    "tIntegral": tIntegral,
+                    "tA": tA,
+                    "tB": tB,
+                    "tC": tC,
+                    "tD": tD,
+                    "tEnd": tEnd,
+                    "levelId": levelId
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+
+
+
+
+	</script>
+</body>
+</html>

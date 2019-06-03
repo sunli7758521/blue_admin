@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralRecordLogMapper">
+    
+    <resultMap type="IntegralRecordLog" id="IntegralRecordLogResult">
+        <result property="recordLogId"    column="record_log_id"    />
+        <result property="recordName"    column="record_name"    />
+        <result property="recordImg"    column="record_img"    />
+        <result property="dhIntegral"    column="dh_integral"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="syIntegral"    column="sy_integral"    />
+        <result property="dhCreateTime"    column="dh_create_time"    />
+        <result property="shTime"    column="sh_time"    />
+        <result property="status"    column="status"    />
+        <result property="gId"    column="g_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectIntegralRecordLogVo">
+        select record_log_id, record_name, record_img, dh_integral, user_name, user_phone, sy_integral, dh_create_time, sh_time, status, g_id, remark from integral_record_log
+    </sql>
+	
+    <select id="selectIntegralRecordLogList" parameterType="IntegralRecordLog" resultMap="IntegralRecordLogResult">
+        <include refid="selectIntegralRecordLogVo"/>
+        <where>  
+            <if test="recordLogId != null "> and record_log_id = #{recordLogId}</if>
+             <if test="recordName != null  and recordName != '' "> and record_name = #{recordName}</if>
+             <if test="recordImg != null  and recordImg != '' "> and record_img = #{recordImg}</if>
+             <if test="dhIntegral != null "> and dh_integral = #{dhIntegral}</if>
+             <if test="userName != null  and userName != '' "> and user_name = #{userName}</if>
+             <if test="userPhone != null "> and user_phone = #{userPhone}</if>
+             <if test="syIntegral != null "> and sy_integral = #{syIntegral}</if>
+             <if test="dhCreateTime != null "> and dh_create_time = #{dhCreateTime}</if>
+             <if test="shTime != null "> and sh_time = #{shTime}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="gId != null "> and g_id = #{gId}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectIntegralRecordLogById" parameterType="Integer" resultMap="IntegralRecordLogResult">
+        <include refid="selectIntegralRecordLogVo"/>
+        where record_log_id = #{recordLogId}
+    </select>
+        
+    <insert id="insertIntegralRecordLog" parameterType="IntegralRecordLog">
+        insert into integral_record_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="recordLogId != null  ">record_log_id,</if>
+			<if test="recordName != null  and recordName != ''  ">record_name,</if>
+			<if test="recordImg != null  and recordImg != ''  ">record_img,</if>
+			<if test="dhIntegral != null  ">dh_integral,</if>
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="userPhone != null  ">user_phone,</if>
+			<if test="syIntegral != null  ">sy_integral,</if>
+			<if test="dhCreateTime != null  ">dh_create_time,</if>
+			<if test="shTime != null  ">sh_time,</if>
+			<if test="status != null  ">status,</if>
+			<if test="gId != null  ">g_id,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="recordLogId != null  ">#{recordLogId},</if>
+			<if test="recordName != null  and recordName != ''  ">#{recordName},</if>
+			<if test="recordImg != null  and recordImg != ''  ">#{recordImg},</if>
+			<if test="dhIntegral != null  ">#{dhIntegral},</if>
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="userPhone != null  ">#{userPhone},</if>
+			<if test="syIntegral != null  ">#{syIntegral},</if>
+			<if test="dhCreateTime != null  ">#{dhCreateTime},</if>
+			<if test="shTime != null  ">#{shTime},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="gId != null  ">#{gId},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralRecordLog" parameterType="IntegralRecordLog">
+        update integral_record_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordName != null  and recordName != ''  ">record_name = #{recordName},</if>
+            <if test="recordImg != null  and recordImg != ''  ">record_img = #{recordImg},</if>
+            <if test="dhIntegral != null  ">dh_integral = #{dhIntegral},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="userPhone != null  ">user_phone = #{userPhone},</if>
+            <if test="syIntegral != null  ">sy_integral = #{syIntegral},</if>
+            <if test="dhCreateTime != null  ">dh_create_time = #{dhCreateTime},</if>
+            <if test="shTime != null  ">sh_time = #{shTime},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="gId != null  ">g_id = #{gId},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where record_log_id = #{recordLogId}
+    </update>
+
+	<delete id="deleteIntegralRecordLogById" parameterType="Integer">
+        delete from integral_record_log where record_log_id = #{recordLogId}
+    </delete>
+	
+    <delete id="deleteIntegralRecordLogByIds" parameterType="String">
+        delete from integral_record_log where record_log_id in 
+        <foreach item="recordLogId" collection="array" open="(" separator="," close=")">
+            #{recordLogId}
+        </foreach>
+    </delete>
+    
+</mapper>

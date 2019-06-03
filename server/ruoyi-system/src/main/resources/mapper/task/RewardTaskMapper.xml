@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.task.mapper.RewardTaskMapper">
+    
+    <resultMap type="RewardTask" id="RewardTaskResult">
+        <result property="rtId"    column="rt_id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="taskTypeId"    column="task_type_id"    />
+        <result property="integralTypeId"    column="integral_type_id"    />
+        <result property="appWay"    column="app_way"    />
+        <result property="taskIntegral"    column="task_integral"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="peopleNum"    column="people_num"    />
+        <result property="sort"    column="sort"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="remark"    column="remark"    />
+        <result column="release_user_id" property="releaseUserId" />
+        <result column="role_ids" property="roleIds" />
+    </resultMap>
+	
+	<sql id="selectRewardTaskVo">
+        select rt_id, title, content, task_type_id, integral_type_id, app_way, task_integral,
+        start_time, end_time, people_num, sort, status, create_time, update_time, dept_id, remark ,
+        release_user_id ,role_ids
+         from reward_task
+    </sql>
+	
+    <select id="selectRewardTaskList" parameterType="RewardTask" resultMap="RewardTaskResult">
+        <include refid="selectRewardTaskVo"/>
+        <where>  
+            <if test="rtId != null "> and rt_id = #{rtId}</if>
+             <if test="title != null  and title != '' "> and title = #{title}</if>
+             <if test="content != null  and content != '' "> and content = #{content}</if>
+             <if test="taskTypeId != null "> and task_type_id = #{taskTypeId}</if>
+             <if test="integralTypeId != null "> and integral_type_id = #{integralTypeId}</if>
+             <if test="appWay != null  and appWay != '' "> and app_way = #{appWay}</if>
+             <if test="taskIntegral != null "> and task_integral = #{taskIntegral}</if>
+             <if test="startTime != null "> and start_time = #{startTime}</if>
+             <if test="endTime != null "> and end_time = #{endTime}</if>
+             <if test="peopleNum != null "> and people_num = #{peopleNum}</if>
+             <if test="sort != null  and sort != '' "> and sort = #{sort}</if>
+             <if test="status != null  and status != '' "> and status = #{status}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="deptId != null  and deptId != '' "> and dept_id = #{deptId}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="releaseUserId != null  and releaseUserId != '' "> and release_user_id = #{releaseUserId}</if>
+             <if test="roleIds != null  and roleIds != '' "> and role_ids = #{roleIds}</if>
+         </where>
+    </select>
+    
+    <select id="selectRewardTaskById" parameterType="Integer" resultMap="RewardTaskResult">
+        <include refid="selectRewardTaskVo"/>
+        where rt_id = #{rtId}
+    </select>
+        
+    <insert id="insertRewardTask" parameterType="RewardTask">
+        <selectKey keyProperty="rtId" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into reward_task
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="rtId != null  ">rt_id,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="taskTypeId != null  ">task_type_id,</if>
+			<if test="integralTypeId != null  ">integral_type_id,</if>
+			<if test="appWay != null  and appWay != ''  ">app_way,</if>
+			<if test="taskIntegral != null  ">task_integral,</if>
+			<if test="startTime != null  ">start_time,</if>
+			<if test="endTime != null  ">end_time,</if>
+			<if test="peopleNum != null  ">people_num,</if>
+			<if test="sort != null  and sort != ''  ">sort,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="deptId != null  and deptId != ''  ">dept_id,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="releaseUserId != null  and releaseUserId != '' ">release_user_id,</if>
+            <if test="roleIds != null  and roleIds != '' ">role_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="rtId != null  ">#{rtId},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="taskTypeId != null  ">#{taskTypeId},</if>
+			<if test="integralTypeId != null  ">#{integralTypeId},</if>
+			<if test="appWay != null  and appWay != ''  ">#{appWay},</if>
+			<if test="taskIntegral != null  ">#{taskIntegral},</if>
+			<if test="startTime != null  ">#{startTime},</if>
+			<if test="endTime != null  ">#{endTime},</if>
+			<if test="peopleNum != null  ">#{peopleNum},</if>
+			<if test="sort != null  and sort != ''  ">#{sort},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="deptId != null  and deptId != ''  ">#{deptId},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="releaseUserId != null  and releaseUserId != '' ">#{releaseUserId},</if>
+            <if test="roleIds != null  and roleIds != '' ">#{roleIds},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateRewardTask" parameterType="RewardTask">
+        update reward_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="taskTypeId != null  ">task_type_id = #{taskTypeId},</if>
+            <if test="integralTypeId != null  ">integral_type_id = #{integralTypeId},</if>
+            <if test="appWay != null  and appWay != ''  ">app_way = #{appWay},</if>
+            <if test="taskIntegral != null  ">task_integral = #{taskIntegral},</if>
+            <if test="startTime != null  ">start_time = #{startTime},</if>
+            <if test="endTime != null  ">end_time = #{endTime},</if>
+            <if test="peopleNum != null  ">people_num = #{peopleNum},</if>
+            <if test="sort != null  and sort != ''  ">sort = #{sort},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="deptId != null  and deptId != ''  ">dept_id = #{deptId},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="releaseUserId != null  and releaseUserId != '' ">release_user_id = #{releaseUserId}</if>,
+            <if test="roleIds != null  and roleIds != '' ">role_ids =#{roleIds},</if>
+        </trim>
+        where rt_id = #{rtId}
+    </update>
+
+	<delete id="deleteRewardTaskById" parameterType="Integer">
+        delete from reward_task where rt_id = #{rtId}
+    </delete>
+	
+    <delete id="deleteRewardTaskByIds" parameterType="String">
+        delete from reward_task where rt_id in 
+        <foreach item="rtId" collection="array" open="(" separator="," close=")">
+            #{rtId}
+        </foreach>
+    </delete>
+    
+</mapper>

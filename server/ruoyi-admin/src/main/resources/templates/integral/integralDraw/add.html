@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralDraw-add" method="post"  enctype="multipart/form-data"  action="/integral/integralDraw/add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">奖品名称：</label>
+				<div class="col-sm-8">
+					<input id="name" name="name" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">奖品图片：</label>
+				<div class="col-sm-8">
+<!--					<input id="goodUrl" name="goodUrl" class="form-control" type="text">-->
+					<input id="file" name="file" type="file" class="file-loading"  accept="image/*">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">奖品总数：</label>
+				<div class="col-sm-8">
+					<input id="amount" name="amount" class="form-control" type="text">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">单个商品的积分值：</label>
+				<div class="col-sm-8">
+					<input id="Integralvalue" name="Integralvalue" class="form-control" type="text">
+				</div>
+			</div>
+
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">权重：</label>
+				<div class="col-sm-8">
+					<input id="weight" name="weight" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralDraw"
+		$("#form-integralDraw-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		/*function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-integralDraw-add').serialize());
+	        }
+	    }*/
+		/** 上传图片提交*/
+		function submitHandler() {
+			if ($.validate.form()) {
+				var opt = {
+					error : function(request) {
+						$.modal.alertError("系统错误");
+					},
+					success : function(data) {
+						$.operate.saveSuccess(data);
+					}
+				};
+				$('#form-integralDraw-add').ajaxSubmit(opt);
+			}
+		}
+
+		/** 上传 图片 初始化fileinput*/
+		$(function () {
+			uploads();
+		});
+
+		function uploads() {
+			$('#file').fileinput({
+				theme: 'fas',
+				language: 'zh',
+				showUpload: false,
+				maxFileCount:1, //表示允许同时上传的最大文件个数
+				maxFileSize : 1000000, // 1 MB
+				imageMaxWidth : 50,
+				imageMaxHeight : 50,
+				showUploadedThumbs:false,
+				autoReplace:true,
+				messages : {
+					acceptFileTypes : '文件类型不匹配',
+					maxFileSize : '文件过大',
+					minFileSize : '文件过小'
+				}
+			}).on("filebatchselected", function(event, files) {
+
+			}).on('fileerror', function(event, data, msg) {
+				$('#file').fileinput('clear');
+			}).on("fileuploaded", function (event, data, previewId, index) {
+				$('#file').fileinput('clear');
+			});
+		}
+	</script>
+</body>
+</html>

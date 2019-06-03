@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralSqfsMapper">
+    
+    <resultMap type="IntegralSqfs" id="IntegralSqfsResult">
+        <result property="sqfsId"    column="sqfs_id"    />
+        <result property="sqName"    column="sq_name"    />
+    </resultMap>
+	
+	<sql id="selectIntegralSqfsVo">
+        select sqfs_id, sq_name from integral_sqfs
+    </sql>
+	
+    <select id="selectIntegralSqfsList" parameterType="IntegralSqfs" resultMap="IntegralSqfsResult">
+        <include refid="selectIntegralSqfsVo"/>
+        <where>  
+            <if test="sqfsId != null "> and sqfs_id = #{sqfsId}</if>
+             <if test="sqName != null  and sqName != '' "> and sq_name = #{sqName}</if>
+         </where>
+    </select>
+    
+    <select id="selectIntegralSqfsById" parameterType="Integer" resultMap="IntegralSqfsResult">
+        <include refid="selectIntegralSqfsVo"/>
+        where sqfs_id = #{sqfsId}
+    </select>
+        
+    <insert id="insertIntegralSqfs" parameterType="IntegralSqfs">
+        insert into integral_sqfs
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sqfsId != null  ">sqfs_id,</if>
+			<if test="sqName != null  and sqName != ''  ">sq_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sqfsId != null  ">#{sqfsId},</if>
+			<if test="sqName != null  and sqName != ''  ">#{sqName},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralSqfs" parameterType="IntegralSqfs">
+        update integral_sqfs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sqName != null  and sqName != ''  ">sq_name = #{sqName},</if>
+        </trim>
+        where sqfs_id = #{sqfsId}
+    </update>
+
+	<delete id="deleteIntegralSqfsById" parameterType="Integer">
+        delete from integral_sqfs where sqfs_id = #{sqfsId}
+    </delete>
+	
+    <delete id="deleteIntegralSqfsByIds" parameterType="String">
+        delete from integral_sqfs where sqfs_id in 
+        <foreach item="sqfsId" collection="array" open="(" separator="," close=")">
+            #{sqfsId}
+        </foreach>
+    </delete>
+    
+</mapper>

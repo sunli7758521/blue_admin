@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.level.mapper.LevelAssMapper">
+    
+    <resultMap type="LevelAss" id="LevelAssResult">
+        <id property="levelId"    column="level_id"    />
+        <result property="assName"    column="ass_name"    />
+        <result property="deptIds"    column="dept_ids"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="state"    column="state"    />
+        <result property="remark"    column="remark"    />
+        <result property="shenQingFangShi"    column="shen_qing_fang_shi"    />
+        <result property="carateTime"    column="carate_time"    />
+        <result property="userId"    column="user_id"    />
+
+        <result property="numberid"    column="number_id"    />
+        <association property="sysDept" column="dept_id" javaType="SysDept" resultMap="sysdeptResult" />
+        <association property="sysuser" column="user_id" javaType="SysUser" resultMap="ku" />
+    </resultMap>
+    <resultMap id="sysdeptResult" type="SysDept">
+        <id property="deptId"    column="dept_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <resultMap id="ku" type="SysUser">
+        <id property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+    </resultMap>
+
+	
+	<sql id="selectLevelAssVo">
+        select u.level_id, u.ass_name, u.dept_ids, u.type_id, u.state, u.remark,
+        d.dept_id,d.dept_name,d.parent_id,u.shen_qing_fang_shi,u.carate_time,u.user_id,dd.user_name
+         from level_ass u left join sys_dept d on u.dept_ids=d.dept_id
+         left join sys_user dd on dd.user_id=u.user_id
+    </sql>
+	
+    <select id="selectLevelAssList" parameterType="LevelAss" resultMap="LevelAssResult">
+        <include refid="selectLevelAssVo"/>
+        <where>  
+            <if test="levelId != null "> and level_id = #{levelId}</if>
+             <if test="assName != null  and assName != '' "> and ass_name = #{assName}</if>
+             <if test="deptIds != null  and deptIds != '' "> and dept_ids = #{deptIds}</if>
+             <if test="typeId != null "> and type_id = #{typeId}</if>
+             <if test="state != null  and state != '' "> and state = #{state}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="shenQingFangShi != null  and shenQingFangShi != '' "> and shen_qing_fang_shi = #{shenQingFangShi}</if>
+            <if test="carateTime != null  and carateTime != '' "> and carate_time = #{carateTime}</if>
+            <if test="userId != null  and userId != '' "> and user_id = #{userId}</if>
+         </where>
+        order  by carate_time desc
+    </select>
+    
+    <select id="selectLevelAssById" parameterType="Integer" resultMap="LevelAssResult">
+        <include refid="selectLevelAssVo"/>
+        where level_id = #{levelId}
+    </select>
+        
+    <insert id="insertLevelAss" parameterType="LevelAss">
+        insert into level_ass
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="levelId != null  ">level_id,</if>
+			<if test="assName != null  and assName != ''  ">ass_name,</if>
+			<if test="deptIds != null  and deptIds != ''  ">dept_ids,</if>
+			<if test="typeId != null  ">type_id,</if>
+			<if test="state != null  and state != ''  ">state,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="shenQingFangShi != null  and shenQingFangShi != ''  ">shen_qing_fang_shi,</if>
+            <if test="carateTime != null  ">carate_time,</if>
+            <if test="userId != null  ">user_id, </if>
+            <if test="numberid != null  ">number_id, </if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="levelId != null  ">#{levelId},</if>
+			<if test="assName != null  and assName != ''  ">#{assName},</if>
+			<if test="deptIds != null  and deptIds != ''  ">#{deptIds},</if>
+			<if test="typeId != null  ">#{typeId},</if>
+			<if test="state != null  and state != ''  ">#{state},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="shenQingFangShi != null  and shenQingFangShi != ''  ">#{shenQingFangShi},</if>
+            <if test="carateTime != null  ">#{carateTime},</if>
+            <if test="userId != null  ">#{userId},</if>
+            <if test="numberid != null  ">#{numberid},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateLevelAss" parameterType="LevelAss">
+        update level_ass
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="assName != null  and assName != ''  ">ass_name = #{assName},</if>
+            <if test="deptIds != null  and deptIds != ''  ">dept_ids = #{deptIds},</if>
+            <if test="typeId != null  ">type_id = #{typeId},</if>
+            <if test="state != null  and state != ''  ">state = #{state},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="shenQingFangShi != null  and shenQingFangShi != ''  ">shen_qing_fang_shi = #{shenQingFangShi},</if>
+            <if test="carateTime != null  ">carate_time = #{carateTime},</if>
+            <if test="userId != null  and userId != '' ">user_id = #{userId},</if>
+
+        </trim>
+        where level_id = #{levelId}
+    </update>
+
+	<delete id="deleteLevelAssById" parameterType="Integer">
+        delete from level_ass where level_id = #{levelId}
+    </delete>
+	
+    <delete id="deleteLevelAssByIds" parameterType="String">
+        delete from level_ass where level_id in 
+        <foreach item="levelId" collection="array" open="(" separator="," close=")">
+            #{levelId}
+        </foreach>
+    </delete>
+    
+</mapper>

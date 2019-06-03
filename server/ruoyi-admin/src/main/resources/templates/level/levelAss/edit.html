@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-levelAss-edit" th:object="${levelAss}">
+            <input id="treeIds" name="deptIds" th:field="*{deptIds}"  type="hidden">
+            <input id="levelId" name="levelId" th:field="*{levelId}"  type="hidden">
+
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">考核名称：</label>
+                <div class="col-sm-8">
+                    <input id="assName" name="assName" th:field="*{assName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">部门名称：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text"  onclick="selectDeptTree()" readonly="true" id="treeNames" th:field="*{sysDept.deptName}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">行为类型：</label>
+                <div class="col-sm-8">
+                    <select name="typeId" id="typeId" class="form-control m-b-none" th:field="*{typeId}">
+                        <!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+                        <option value=0>品德A分管理</option>
+                        <option value=1>业绩B分管理</option>
+                        <option value=2>行为C分管理</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">申请方式：</label>
+                <div class="col-sm-8">
+                    <select name="shenQingFangShi" id="shenQingFangShi" class="form-control m-b-none" th:field="*{shenQingFangShi}">
+                        <!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+                        <option value='0'>每天一次</option>
+                        <option value='1'>每月一次</option>
+                        <option value='2'>无限制</option>
+                        <option value='3'>每周一次</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">使用状态</label>
+                <div class="col-sm-8">
+                    <div class="onoffswitch">
+                        <input type="checkbox" class="onoffswitch-checkbox" id="state"  th:checked="!*{state}"   name="state">
+                        <label class="onoffswitch-label" for="state">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">时间：</label>
+                <div class="col-sm-8">
+                    <input id="carateTime" name="carateTime" th:field="*{carateTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+    <script type="text/javascript">
+        var prefix = ctx + "level/levelAss"
+        $("#form-levelAss-edit").validate({
+            rules:{
+                typeId:{
+                    required:true,
+                },
+            }
+        });
+        function submitHandler() {
+            if ($.validate.form()) {
+              // $.operate.save(prefix + "/edit", $('#form-pdIntegral-edit').serialize());
+                aa();
+            }
+        }
+        function aa(){
+            var levelId = $("input[name='levelId']").val();
+            var assName = $("input[name='assName']").val();
+            var deptIds = $("input[name='deptIds']").val();
+            var typeId = $("select[name='typeId'] option:selected").val();
+            var state = $("input[name='state']").is(':checked') == true ? 0 : 1;
+            var remark = $("input[name='remark']").val();
+            var shenQingFangShi = $("select[name='shenQingFangShi'] option:selected").val();
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "level/levelAss/edit",
+                data : {
+                    "levelId": levelId,
+                    "assName": assName,
+                    "deptIds":deptIds,
+                    "typeId": typeId,
+                    "state": state,
+                    "remark": remark,
+                    "shenQingFangShi": shenQingFangShi
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+
+        /*用户管理-新增-选择部门树*/
+        function selectDeptTree() {
+            var treeId = $("#treeIds").val();
+            var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeIds").val();
+            var url = ctx + "integral/xwIntegral/selectIntegralMenuDeptTree/" + deptId;
+            var options = {
+                title: '选择部门',
+                width: "380",
+                url: ctx + "integral/xwIntegral/selectIntegralMenuDeptTree/" + deptId,
+                callBack: doSubmit2
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit2(index, layero){
+            var body = layer.getChildFrame('body', index);
+            $("#treeIds").val(body.find('#treeId').val());
+            $("#treeNames").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+
+
+    </script>
+</body>
+</html>

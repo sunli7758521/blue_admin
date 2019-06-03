@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="level:levelTitle:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="level:levelTitle:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="level:levelTitle:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>									<!--th:value="*{typeId}"-->
+        <input  id ="levelId" type="hidden" th:value="*{levelId}"/>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+
+        var levelId =	$("#levelId").val();
+
+
+        var editFlag = [[${@permission.hasPermi('level:levelTitle:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('level:levelTitle:remove')}]];
+        var prefix = ctx + "level/levelTitle";
+
+        $(function() {
+            var options = {
+                url: prefix + "/listTitle1"+"/"+levelId,
+                createUrl: prefix + "/add"+"/"+levelId,
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "水平考核题目",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field : 'tId',
+                        title : '主键',
+                        visible: false
+                    },
+                    {
+                        field : 'tName',
+                        title : '题目名称'
+                    },
+
+                    {
+                        field : 'tA',
+                        title : '答案A'
+
+                    },
+                    {
+                        field : 'tB',
+                        title : '答案B'
+                    },
+                    {
+                        field : 'tC',
+                        title : '答案C'
+                    },
+                    {
+                        field : 'tD',
+                        title : '答案D'
+                    },
+                    {
+                        field : 'tIntegral',
+                        title : '积分奖励'
+                    },
+                    {
+                        field : 'catabTime',
+                        title : '时间'
+                    },
+                    {
+                        field : 'tEnd',
+                        title : '正确答案',
+                        formatter: function (value) {
+                            switch (value) {
+                                case '0': return '<span class="badge badge-info">A</span>';
+                                case '1': return '<span class="badge badge-danger">B</span>';
+                                case '2': return '<span class="badge badge-danger">C</span>';
+                                case '3': return '<span class="badge badge-danger">D</span>';
+                            }
+                        }
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.tId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.tId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            return actions.join('');
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-integralMenu-add">
+			<input id="treeId" name="parentId" type="hidden"   th:value="${integralMenu.menuId}"  />
+			<input id="treeIds" name="deptIds" type="hidden"   th:value="100"  />
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">上级菜单：</label>
+				<div class="col-sm-8">
+					<input class="form-control"  type="text" onclick="selectIntegralMenu()" id="treeName" name="treeName" readonly="true" th:value="${integralMenu.typeName}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">类别名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="typeName" id="name">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">显示排序：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="orderNum">
+				</div>
+			</div>
+			<div class="form-group">
+			<label class="col-sm-3 control-label">部门名称：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" name="deptName" onclick="selectDeptTree()" readonly="true" id="treeNames" th:value="${integralMenu.deptName}" >
+			</div>
+		</div>
+			 <div class="form-group">
+				<label class="col-sm-3 control-label">部门状态：</label>
+				<div class="col-sm-8">
+				    <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+						<input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.isDefault == 'Y' ? true : false}">
+						<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注信息：</label>
+				<div class="col-sm-8">
+					<textarea id="remark" name="remark" class="form-control"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		var prefix = ctx + "integral/integralMenu";
+
+		$("#form-integralMenu-add").validate({
+			rules:{
+                treeName:{
+				    required:true
+                },
+                typeName:{
+				    required:true
+                },
+                // orderNum:{
+                //     required:true,
+                //     digits:true
+                // }
+            }
+		});
+
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/add", $('#form-integralMenu-add').serialize());
+	        }
+	    }
+
+		/* 积分类别树 */
+		function selectIntegralMenu() {
+			var options = {
+				title: '类别选择',
+				width: "380",
+				url: prefix + "/selectIntegralMenuTree/" + $("#treeId").val(),
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+
+		function doSubmit(index, layero){
+			var body = layer.getChildFrame('body', index);
+   			$("#treeId").val(body.find('#treeId2').val());
+   			console.log(body.find('#treeId2').val());
+   			$("#treeName").val(body.find('#treeName2').val());
+   			layer.close(index);
+		}
+
+        /*用户管理-新增-选择部门树*/
+        function selectDeptTree() {
+            var treeId = $("#treeIds").val();
+            var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeIds").val();
+            var url = ctx + "integral/integralMenu/selectIntegralMenuDeptTree/" + deptId;
+            var options = {
+                title: '选择部门',
+                width: "380",
+                url: ctx + "integral/integralMenu/selectIntegralMenuDeptTree/" + deptId,
+                callBack: doSubmit2
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit2(index, layero){
+            var body = layer.getChildFrame('body', index);
+            $("#treeIds").val(body.find('#treeId').val());
+            $("#treeNames").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+	</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="data-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								字典标签：<input hidden type="text" id="userId" name="userId" th:value="${userId}"/>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+<!--				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:sysUserDeptPost:add">-->
+<!--					<i class="fa fa-plus"></i> 添加-->
+<!--				</a>-->
+<!--				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="system:sysUserDeptPost:edit">-->
+<!--					<i class="fa fa-edit"></i> 修改-->
+<!--				</a>-->
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:sysUserDeptPost:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:sysUserDeptPost:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:sysUserDeptPost:remove')}]];
+        var prefix = ctx + "system/sysUserDeptPost";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				queryParams: queryParams,
+                modalName: "用户属于那个部门管理那个部门",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'udId', 
+					title : '主键',
+					visible: false
+
+				},
+				{
+					field : 'userName',
+					title : '管理者名称'
+				},
+				{
+					field : 'deptName',
+					title : '部门名称'
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间' 
+				},
+				{
+					field : 'updateTime', 
+					title : '修改时间' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	// actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.udId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.udId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+		function queryParams(params) {
+			return {
+				userId:       $("#userId").val(),
+				pageSize:       params.limit,
+				pageNum:        params.offset / params.limit + 1,
+				searchValue:    params.search,
+				orderByColumn:  params.sort,
+				isAsc:          params.order
+			};
+		}
+    </script>
+</body>
+</html>

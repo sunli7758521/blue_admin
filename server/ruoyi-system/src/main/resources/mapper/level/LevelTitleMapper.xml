@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.level.mapper.LevelTitleMapper">
+    
+    <resultMap type="LevelTitle" id="LevelTitleResult">
+        <result property="tId"    column="t_id"    />
+        <result property="tName"    column="t_name"    />
+        <result property="tIntegral"    column="t_integral"    />
+        <result property="tA"    column="t_a"    />
+        <result property="tB"    column="t_b"    />
+        <result property="tC"    column="t_c"    />
+        <result property="tD"    column="t_d"    />
+        <result property="tEnd"    column="t_end"    />
+        <result property="levelId"    column="level_id"    />
+        <result property="catabTime"    column="catab_time"    />
+    </resultMap>
+	
+	<sql id="selectLevelTitleVo">
+        select t_id, t_name, t_integral, t_a, t_b, t_c, t_d, t_end  ,level_id  ,catab_time from level_title
+    </sql>
+	
+    <select id="selectLevelIdTitleList"  resultMap="LevelTitleResult">
+        <include refid="selectLevelTitleVo"/>
+        <where>  
+            <if test="levelId != null  and levelId != '' ">
+                and level_id = #{levelId}
+            </if>
+         </where>
+        order  by catab_time desc
+    </select>
+    
+    <select id="selectLevelTitleById" parameterType="Integer" resultMap="LevelTitleResult">
+        <include refid="selectLevelTitleVo"/>
+        where t_id = #{tId}
+    </select>
+        
+    <insert id="insertLevelTitle" parameterType="LevelTitle">
+        insert into level_title
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tId != null  ">t_id,</if>
+			<if test="tName != null  and tName != ''  ">t_name,</if>
+			<if test="tIntegral != null  ">t_integral,</if>
+			<if test="tA != null  and tA != ''  ">t_a,</if>
+			<if test="tB != null  and tB != ''  ">t_b,</if>
+			<if test="tC != null  and tC != ''  ">t_c,</if>
+			<if test="tD != null  and tD != ''  ">t_d,</if>
+			<if test="tEnd != null  and tEnd != ''  ">t_end,</if>
+            <if test="levelId != null  and levelId != '' ">level_id,</if>
+            <if test="catabTime != null  ">catab_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tId != null  ">#{tId},</if>
+			<if test="tName != null  and tName != ''  ">#{tName},</if>
+			<if test="tIntegral != null  ">#{tIntegral},</if>
+			<if test="tA != null  and tA != ''  ">#{tA},</if>
+			<if test="tB != null  and tB != ''  ">#{tB},</if>
+			<if test="tC != null  and tC != ''  ">#{tC},</if>
+			<if test="tD != null  and tD != ''  ">#{tD},</if>
+			<if test="tEnd != null  and tEnd != ''  ">#{tEnd},</if>
+            <if test="levelId != null  and levelId != '' ">#{levelId},</if>
+            <if test="catabTime != null ">#{catabTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateLevelTitle" parameterType="LevelTitle">
+        update level_title
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tName != null  and tName != ''  ">t_name = #{tName},</if>
+            <if test="tIntegral != null  ">t_integral = #{tIntegral},</if>
+            <if test="tA != null  and tA != ''  ">t_a = #{tA},</if>
+            <if test="tB != null  and tB != ''  ">t_b = #{tB},</if>
+            <if test="tC != null  and tC != ''  ">t_c = #{tC},</if>
+            <if test="tD != null  and tD != ''  ">t_d = #{tD},</if>
+            <if test="tEnd != null  and tEnd != ''  ">t_end = #{tEnd},</if>
+            <if test="levelId != null  and levelId != '' ">level_id = #{levelId},</if>
+            <if test="catabTime != null  ">catab_time = #{catabTime},</if>
+        </trim>
+        where t_id = #{tId}
+    </update>
+
+	<delete id="deleteLevelTitleById" parameterType="Integer">
+        delete from level_title where t_id = #{tId}
+    </delete>
+	
+    <delete id="deleteLevelTitleByIds" parameterType="String">
+        delete from level_title where t_id in 
+        <foreach item="tId" collection="array" open="(" separator="," close=")">
+            #{tId}
+        </foreach>
+    </delete>
+
+</mapper>

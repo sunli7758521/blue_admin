@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.task.mapper.RewardTaskDeptMapper">
+    
+    <resultMap type="RewardTaskDept" id="RewardTaskDeptResult">
+        <result property="rtdId"    column="rtd_id"    />
+        <result property="rtId"    column="rt_id"    />
+        <result property="dId"    column="d_id"    />
+        <result property="createDate"    column="create_date"    />
+    </resultMap>
+	
+	<sql id="selectRewardTaskDeptVo">
+        select rtd_id, rt_id, d_id, create_date from reward_task_dept
+    </sql>
+	
+    <select id="selectRewardTaskDeptList" parameterType="RewardTaskDept" resultMap="RewardTaskDeptResult">
+        <include refid="selectRewardTaskDeptVo"/>
+        <where>  
+            <if test="rtdId != null "> and rtd_id = #{rtdId}</if>
+             <if test="rtId != null "> and rt_id = #{rtId}</if>
+             <if test="dId != null "> and d_id = #{dId}</if>
+             <if test="createDate != null "> and create_date = #{createDate}</if>
+         </where>
+    </select>
+    
+    <select id="selectRewardTaskDeptById" parameterType="Integer" resultMap="RewardTaskDeptResult">
+        <include refid="selectRewardTaskDeptVo"/>
+        where rtd_id = #{rtdId}
+    </select>
+        
+    <insert id="insertRewardTaskDept" parameterType="RewardTaskDept">
+        insert into reward_task_dept
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="rtdId != null  ">rtd_id,</if>
+			<if test="rtId != null  ">rt_id,</if>
+			<if test="dId != null  ">d_id,</if>
+			<if test="createDate != null  ">create_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="rtdId != null  ">#{rtdId},</if>
+			<if test="rtId != null  ">#{rtId},</if>
+			<if test="dId != null  ">#{dId},</if>
+			<if test="createDate != null  ">#{createDate},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateRewardTaskDept" parameterType="RewardTaskDept">
+        update reward_task_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rtId != null  ">rt_id = #{rtId},</if>
+            <if test="dId != null  ">d_id = #{dId},</if>
+            <if test="createDate != null  ">create_date = #{createDate},</if>
+        </trim>
+        where rtd_id = #{rtdId}
+    </update>
+
+	<delete id="deleteRewardTaskDeptById" parameterType="Integer">
+        delete from reward_task_dept where rtd_id = #{rtdId}
+    </delete>
+	
+    <delete id="deleteRewardTaskDeptByIds" parameterType="String">
+        delete from reward_task_dept where rtd_id in 
+        <foreach item="rtdId" collection="array" open="(" separator="," close=")">
+            #{rtdId}
+        </foreach>
+    </delete>
+    <!--通过悬赏任务的id 查询所关联的部门id-->
+    <select id="selectByRewardTaskId" resultMap="RewardTaskDeptResult" >
+     <include refid="selectRewardTaskDeptVo" />
+     where reward_task_dept.rt_id = #{rtId}
+    </select>
+    <!--通过悬赏任务的id 删除所关联的部门ids-->
+    <select id="delectByRewardTaskId"  >
+      DELETE  from reward_task_dept where reward_task_dept.rt_id =  #{rtId}
+    </select>
+</mapper>

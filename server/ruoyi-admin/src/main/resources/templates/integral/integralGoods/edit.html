@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralGoods-edit" th:object="${integralGoods}">
+            <input id="goodId" name="goodId" th:field="*{goodId}"  type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品封面：</label>
+                <div class="col-sm-8">
+                    <button type="button" class="layui-btn" id="test1">上传图片</button>
+                    <div class="layui-upload-list" style="margin-top: 14px; overflow: auto">
+                        <input id="goodImg" name="goodImg" class="form-control" type="hidden">
+                        <img class="layui-upload-img" id="demo1" th:src="*{goodImg}"  style="max-height: 200px">
+                        <p id="demoText"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-upload form-group">
+                <label class="col-sm-3 control-label">商品轮播图：</label>
+                <div class="col-sm-8">
+                    <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                    <input id="goodLbImg" name="goodLbImg" th:field="*{goodLbImg}" class="form-control"type="hidden" >
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        <div class="layui-upload-list" id="demo2"></div>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">商品名称：</label>
+                <div class="col-sm-8">
+                    <input id="goodName" name="goodName" th:field="*{goodName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">商品库存：</label>
+                <div class="col-sm-8">
+                    <input id="goodKc" name="goodKc" th:field="*{goodKc}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">已兑换数量：</label>
+                <div class="col-sm-8">
+                    <input id="ydhNum" name="ydhNum" th:field="*{ydhNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">兑换积分：</label>
+                <div class="col-sm-8">
+                    <input id="dhIntegral" name="dhIntegral" th:field="*{dhIntegral}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">兑换状态：</label>
+                <div class="col-sm-8">
+                    <div class="onoffswitch">
+                        <input type="checkbox" th:checked="!*{status}" class="onoffswitch-checkbox" id="status" name="status">
+                        <label class="onoffswitch-label" for="status">
+                            <span class="onoffswitch-inner" ></span>
+                            <span class="onoffswitch-switch" ></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="form-group">
+            <div class="col-sm-8">
+                <label class="col-sm-3 control-label">商品图片：</label>
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+                <input id="goodImg" name="goodImg"  class="form-control" type="hidden">
+                <div class="layui-upload-list" style="margin-top: 14px; overflow: auto">
+                    <img class="layui-upload-img" id="demo1"  th:src="*{goodImg}" style="max-height: 400px">
+                    <p id="demoText"></p>
+                </div>
+            </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品图片：</label>
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                        <input id="goodLbImg" name="goodLbImg"  class="form-control" type="hidden">
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                            预览图：
+                            <div class="layui-upload-list" id="demo2"></div>
+                        </blockquote>
+                    </div>
+                </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">商品详情：</label>
+                <div class="col-sm-8">
+                    <input id="goodDetails" name="goodDetails" th:field="*{goodDetails}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">上传时间：</label>
+                <div class="col-sm-8">
+                    <input id="createTime" name="createTime" th:field="*{createTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">修改时间：</label>
+                <div class="col-sm-8">
+                    <input id="updateTime" name="updateTime" th:field="*{updateTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script th:src="@{/ajax/libs/layui3.0/layui.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralGoods"
+		$("#form-integralGoods-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+
+		function submitHandler() {
+	        if ($.validate.form()) {
+	           // $.operate.save(prefix + "/edit", $('#form-integralGoods-edit').serialize());
+                edit();
+	        }
+	    }
+        function edit() {
+            var goodId = $("input[name='goodId']").val();
+            var goodName = $("input[name='goodName']").val();
+            var goodKc = $("input[name='goodKc']").val();
+            var ydhNum = $("input[name='ydhNum']").val();
+            var dhIntegral = $("input[name='dhIntegral']").val();
+            var goodLbImg = $("input[name='goodLbImg']").val();
+            var goodDetails = $("input[name='goodDetails']").val();
+            var createTime = $("input[name='createTime']").val();
+            var updateTime = $("input[name='updateTime']").val();
+            var goodImg = $("input[name='goodImg']").val();
+            var status = $("input[name='status']").is(':checked') == true ? 0 : 1;
+            var remark = $("textarea[name='remark']").val();
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "integral/integralGoods" + "/edit",
+                data : {
+                    "goodId": goodId,
+                    "goodName":goodName,
+                    "goodKc": goodKc,
+                    "ydhNum": ydhNum,
+                    "dhIntegral": dhIntegral,
+                    "goodLbImg": goodLbImg,
+                    "goodDetails": goodDetails,
+                    "createTime": createTime,
+                    "updateTime": updateTime,
+                    "remark": remark,
+                    "status": status,
+                    "goodImg":goodImg
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+	</script>
+
+    <script>
+        /** 多图片回显 */
+        var str = $("#goodLbImg").val();
+        var arr = str.split(",");
+        for ( var i = 0; i <arr.length; i++){
+            console.log(arr[i]);
+            var style = 'max-height: 200px; display: block; margin-bottom: 10px'
+            $("#demo2").append('<img src="'+ arr[i] +'" style="'+ style +'">');
+            // $("#demo2").append(`<img src="${arr[i]}">`);
+        }
+
+
+        /** 单个图片上传 */
+        layui.use('upload', function() {
+            var $ = layui.jquery
+                , upload = layui.upload;
+            var uploadInst = upload.render({
+                elem: '#test1'
+                ,url: '/integral/integralGoods/uploadFile'
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result){
+                        $('#demo1').attr('src', result); //图片链接（base64）
+                    });
+                }
+                ,done: function(res){
+                    $("#goodImg").val(res.pic);
+                    //如果上传失败
+
+                    if(res.code > 0){
+                        return layer.msg('上传失败');
+                    }
+                    //上传成功
+                }
+                ,error: function(){
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function(){
+                        uploadInst.upload();
+                    });
+                }
+            });
+        })
+
+        var first = true
+        /** 多图片上传 */
+        layui.use('upload', function() {
+            var $ = layui.jquery
+                , pics = []
+                , upload = layui.upload;
+
+            var uploadInst = upload.render({
+                elem: '#test2'
+                ,multiple: true
+                ,url: '/integral/integralGoods/uploadFile'
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    if (first) {
+                        $('#demo2').empty()
+                        first = false
+                    }
+                    obj.preview(function(index, file, result){
+                        /* $('#demo1').attr('src', result); //图片链接（base64）*/
+                        var style = 'max-height: 200px; display: block; margin-bottom: 10px'
+                        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" style="'+ style +'" class="layui-upload-img">')
+                    });
+                }
+                ,done: function(res){
+                    pics.push(res.pic)
+                    //如果上传失败
+                    $("#goodLbImg").val(pics);
+                    if(res.code > 0){
+                        return layer.msg('上传失败');
+                    }
+                    //上传成功
+                }
+                ,error: function(){
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function(){
+                        uploadInst.upload();
+                    });
+                }
+            });
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserLoginLogMapper">
+    
+    <resultMap type="UserLoginLog" id="UserLoginLogResult">
+        <result property="userLogId"    column="user_log_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userLoginTime"    column="user_login_time"    />
+    </resultMap>
+	
+	<sql id="selectUserLoginLogVo">
+        select user_log_id, user_id, user_login_time from user_login_log
+    </sql>
+
+    <select id="selectUserLoginLogList" parameterType="UserLoginLog" resultType="com.ruoyi.system.domain.UserLoginLog">
+            SELECT
+            count(user_login_log.user_id) as loginNum,
+            sys_user.user_id AS userId,
+            sys_user.user_name as userName
+            FROM
+                sys_user
+            LEFT JOIN user_login_log ON sys_user.user_id = user_login_log.user_id
+            where sys_user.integral_status = 1
+            <if test="userName != null and  userName !='' ">
+               AND sys_user.user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(user_login_log.user_login_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(user_login_log.user_login_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            GROUP BY sys_user.user_id
+    </select>
+<!--    <select id="selectUserLoginLogList" parameterType="UserLoginLog" resultMap="UserLoginLogResult">-->
+<!--        <include refid="selectUserLoginLogVo"/>-->
+<!--        <where>  -->
+<!--            <if test="userLogId != null "> and user_log_id = #{userLogId}</if>-->
+<!--             <if test="userId != null "> and user_id = #{userId}</if>-->
+<!--             <if test="userLoginTime != null "> and user_login_time = #{userLoginTime}</if>-->
+<!--         </where>-->
+<!--    </select>-->
+    
+    <select id="selectUserLoginLogById" parameterType="Long" resultMap="UserLoginLogResult">
+        <include refid="selectUserLoginLogVo"/>
+        where user_log_id = #{userLogId}
+    </select>
+        
+    <insert id="insertUserLoginLog" parameterType="UserLoginLog">
+        insert into user_login_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userLogId != null  ">user_log_id,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="userLoginTime != null  ">user_login_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userLogId != null  ">#{userLogId},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="userLoginTime != null  ">#{userLoginTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateUserLoginLog" parameterType="UserLoginLog">
+        update user_login_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="userLoginTime != null  ">user_login_time = #{userLoginTime},</if>
+        </trim>
+        where user_log_id = #{userLogId}
+    </update>
+
+	<delete id="deleteUserLoginLogById" parameterType="Long">
+        delete from user_login_log where user_log_id = #{userLogId}
+    </delete>
+	
+    <delete id="deleteUserLoginLogByIds" parameterType="String">
+        delete from user_login_log where user_log_id in 
+        <foreach item="userLogId" collection="array" open="(" separator="," close=")">
+            #{userLogId}
+        </foreach>
+    </delete>
+    <!-- 统计今日所用的访问量  -->
+    <select id="selectCountNum" resultType="Long">
+        SELECT
+	    count(1) as loginNum
+        FROM
+            sys_user
+        LEFT JOIN user_login_log ON sys_user.user_id = user_login_log.user_id
+        where sys_user.integral_status = 1
+        AND  TO_DAYS(user_login_log.user_login_time) = TO_DAYS(NOW())
+    </select>
+</mapper>

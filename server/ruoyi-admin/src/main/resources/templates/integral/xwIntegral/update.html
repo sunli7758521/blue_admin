@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>首页</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+</head>
+<body>
+<iframe src="http://www.meisijia.cn/" frameborder="0" scrolling="no" id="iframe" style="border:0px;" onload="changeFrameHeight()" width="100%"></iframe>
+</body>
+
+<script>
+    function changeFrameHeight(){
+        var ifm= document.getElementById("iframe");
+        ifm.height=document.documentElement.clientHeight;
+
+    }
+
+    window.onresize=function(){
+        changeFrameHeight();
+
+    }
+</script>
+</html>

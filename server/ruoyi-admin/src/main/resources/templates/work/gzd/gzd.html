@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="work:gzd:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="work:gzd:edit">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="work:gzd:remove">
+				<i class="fa fa-times"></i> 删除
+			</a>
+			<a class="btn btn-warning" onclick="$.operate.unlockAll()" shiro:hasPermission="work:gzd:unlock">
+				<i class="fa fa-unlock-alt"></i> 开启
+			</a>
+			<a class="btn btn-primary" onclick="$.operate.lockAll()" shiro:hasPermission="work:gzd:lock">
+				<i class="fa fa-lock"></i> 停用
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('work:gzd:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('work:gzd:remove')}]];
+		var qj = [[${@permission.hasPermi('work:gzd:qj')}]];
+        var prefix = ctx + "work/gzd";
+        var datas = [[${@dict.getType('sys_normal_disable')}]];
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                unlockUrl: prefix + "/unlock",
+                lockUrl: prefix + "/lock",
+                modalName: "工作台应用管理",
+                columns: [{
+		            checkbox: true
+		        },
+                {
+                    field : 'gztId',
+                    title : '主键',
+                    visible: false
+				},
+				{
+					field : 'yyImg',
+					title : '应用图标',
+                    formatter: function(value, row, index) {
+                            if (value) {
+                                return `<img src= ${value} width="100" height="100"   class="img-rounded" />`
+                            } else {
+                                return '没有上传头像'
+                            }
+                        }
+				},
+				{
+					field : 'yyTitle',
+					title : '应用标题'
+				},
+				{
+					field : 'yyType',
+					title : '应用管理'
+				},
+				{
+					field : 'lotteryStatus',
+					title : '抽奖状态',
+                    visible: false
+				 },
+				{
+					field : 'status',
+					title : '状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+				},
+				{
+					field : 'createTime',
+					title : '创建时间'
+				},
+				{
+					field : 'updateTime',
+					title : '修改时间'
+				},
+				{
+					field : 'remark',
+					title : '备注'
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+                        var title = row.yyTitle;
+						if (title == "积分抽奖") {
+ 							var ls = row.lotteryStatus;
+ 							if(ls!= null && ls == "0"){
+                                actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="lotteryUpdate(\'' + row.gztId + '\',1)"><i class="fa fa-lock"></i>关闭抽奖</a>');
+							}else{
+                                actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="lotteryUpdate(\'' + row.gztId + '\',0)"><i class="fa fa-unlock-alt"></i>开启抽奖</a>');
+							}
+						}
+						if(row.status =='1'){
+							actions.push('<a class="btn btn-info btn-xs ' + qj + '" href="#" onclick="qj1(\'' + row.gztId +'|'+ row.status+ '\')"><i class="fa fa-list"></i>启用</a> ');
+						}else if(row.status =='0'){
+							actions.push('<a class="btn btn-danger btn-xs ' + qj + '" href="#" onclick="qj1(\'' + row.gztId + '|' + row.status + '\')"><i class="fa fa-edit"></i>禁用</a> ');
+
+						}
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.gztId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.gztId + '\')"><i class="fa fa-remove"></i>删除</a>');
+
+                        return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+        function lotteryUpdate(id,lottery){
+            var path = prefix + "/lotteryUpdate";
+            var data = { "id": id,"lottery": lottery};
+            $.operate.submit(path, "post", "json", data);
+		}
+		/** 启用禁用 */
+		function qj1(param) {
+			var arr = param.split("|");
+			var id = arr[0];
+			var status = arr[1];
+			var path = prefix + "/qj";
+			var data = { "id": id,"status": status};
+			$.operate.submit(path, "post", "json", data);
+		}
+
+    </script>
+</body>
+</html>

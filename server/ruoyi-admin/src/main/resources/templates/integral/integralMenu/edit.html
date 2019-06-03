@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-integralMenu-edit" th:object="${integralMenu}">
+        <!--<input id="treeId" name="parentId" type="hidden" th:field="*{parentId}" />-->
+        <input id="treeId" name="parentId" type="hidden" th:value="*{parentId}"  />
+        <input name="menuId" type="hidden" th:field="*{menuId}" />
+        <input id="treeIds" name="deptIds" type="hidden"     />
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">上级菜单：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" id="treeName" onclick="selectIntegralMenu()" readonly="true"  th:value="*{parentName}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">菜单名称：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="typeName" th:value="${integralMenu.TypeName}" >
+            </div>
+        </div>
+       <div class="form-group">
+            <label class="col-sm-3 control-label">显示排序：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="orderNum" th:value="${integralMenu.orderNum}" >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门名称：</label>
+            <div class="col-sm-8"><!--name="deptName" th:value="${integralMenu.deptName}"  -->
+                <input class="form-control" type="text"  onclick="selectDeptTree()" readonly="true" id="treeNames"  >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门状态：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+                    <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.isDefault == 'Y' ? true : false}">
+                    <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注信息：</label>
+            <div class="col-sm-8">
+                <textarea id="remark" name="remark" class="form-control"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "integral/integralMenu";
+
+    $("#form-integralMenu-edit").validate({
+        rules:{
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-integralMenu-edit').serialize());
+        }
+    }
+
+    /* 积分类别树 */
+    function selectIntegralMenu() {
+        var options = {
+            title: '类别选择',
+            width: "380",
+            url: prefix + "/selectIntegralMenuTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#treeId").val(body.find('#treeId2').val());
+        $("#treeName").val(body.find('#treeName2').val());
+        layer.close(index);
+    }
+
+    /*部门管理-修改-选择部门树*/
+    function selectDeptTree() {
+        var treeId = $("#treeIds").val();
+        var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeIds").val();
+        var url = ctx + "integral/integralMenu/selectIntegralMenuDeptTree/" + deptId;
+        var options = {
+            title: '选择部门',
+            width: "380",
+            url: ctx + "integral/integralMenu/selectIntegralMenuDeptTree/" + deptId,
+            callBack: doSubmit2
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit2(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#treeIds").val(body.find('#treeId').val());
+        $("#treeNames").val(body.find('#treeName').val());
+        layer.close(index);
+    }
+</script>
+</body>
+</html>

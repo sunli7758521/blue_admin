@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-integralLog-edit" th:object="${integralLog}">
+            <input id="logId" name="logId" th:field="*{logId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">审批编号：</label>
+                <div class="col-sm-8">
+                    <input id="approvalNum" name="approvalNum" th:field="*{approvalNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">关联用户id：</label>
+                <div class="col-sm-8">
+                    <input id="userId" name="userId" th:field="*{userId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">积分表的主键：</label>
+                <div class="col-sm-8">
+                    <input id="integralId" name="integralId" th:field="*{integralId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工手机号：</label>
+                <div class="col-sm-8">
+                    <input id="userPhone" name="userPhone" th:field="*{userPhone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工姓名：</label>
+                <div class="col-sm-8">
+                    <input id="userName" name="userName" th:field="*{userName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工头像：</label>
+                <div class="col-sm-8">
+                    <input id="userImg" name="userImg" th:field="*{userImg}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工部门：</label>
+                <div class="col-sm-8">
+                    <input id="userDept" name="userDept" th:field="*{userDept}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工职位：</label>
+                <div class="col-sm-8">
+                    <input id="userPost" name="userPost" th:field="*{userPost}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">申请积分项目标题：</label>
+                <div class="col-sm-8">
+                    <input id="integralTitle" name="integralTitle" th:field="*{integralTitle}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">积分内容：</label>
+                <div class="col-sm-8">
+                    <input id="integralContent" name="integralContent" th:field="*{integralContent}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">变动积分(所为刚才加的积分)：</label>
+                <div class="col-sm-8">
+                    <input id="bianIntegral" name="bianIntegral" th:field="*{bianIntegral}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">积分类型：</label>
+                <div class="col-sm-8">
+                    <input id="typeId" name="typeId" th:field="*{typeId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">获取积分时间：</label>
+                <div class="col-sm-8">
+                    <input id="getTime" name="getTime" th:field="*{getTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">转态 （0正常    1.撤销刚才所加的积分）：</label>
+                <div class="col-sm-8">
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralLog"
+		$("#form-integralLog-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-integralLog-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

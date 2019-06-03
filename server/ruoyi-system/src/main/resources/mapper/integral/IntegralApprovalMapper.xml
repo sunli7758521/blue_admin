@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralApprovalMapper">
+    
+    <resultMap type="IntegralApproval" id="IntegralApprovalResult">
+        <result property="approvalId"    column="approval_id"    />
+        <result property="approvalNum"    column="approval_num"    />
+        <result property="approvalTitle"    column="approval_title"    />
+        <result property="approvalContent"    column="approval_content"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userImg"    column="user_img"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="userDept"    column="user_dept"    />
+        <result property="userDeptId"    column="user_dept_id"    />
+        <result property="userPostId"    column="user_post_id"    />
+        <result property="userPost"    column="user_post"    />
+        <result property="tiJiaoName"    column="ti_jiao_name"    />
+        <result property="tiJiaoNameImg"    column="ti_jiao_name_img"    />
+        <result property="integralTypeId"    column="integral_type_id"    />
+        <result property="sqTime"    column="sq_time"    />
+        <result property="spTime"    column="sp_time"    />
+        <result property="status"    column="status"    />
+        <result property="sqIntegral"    column="sq_integral"    />
+        <result property="spRemark"    column="sp_remark"    />
+        <result property="approvalTime"    column="approval_time"    />
+        <result property="approvalImg1"    column="approval_img1"    />
+        <result property="approvalImg2"    column="approval_img2"    />
+        <result property="approvalImg3"    column="approval_img3"    />
+        <result property="approvalImg4"    column="approval_img4"    />
+        <result property="approvalImg5"    column="approval_img5"    />
+        <result property="approvalImg6"    column="approval_img6"    />
+        <result property="approvalImg7"    column="approval_img7"    />
+        <result property="approvalImg8"    column="approval_img8"    />
+        <result property="approvalImg9"    column="approval_img9"    />
+        <result property="remark"    column="remark"    />
+        <result property="kIntegral"    column="k_integral"    />
+        <result property="typeId"    column="type_id"    />
+
+    </resultMap>
+	
+	<sql id="selectIntegralApprovalVo">
+        select approval_id, approval_num, approval_title, approval_content, user_id, user_name, user_img, user_phone,
+        user_dept, user_dept_id, user_post_id, user_post, ti_jiao_name, ti_jiao_name_img, integral_type_id, sq_time,
+        sp_time, status, sq_integral, sp_remark, approval_time, approval_img1, approval_img2, approval_img3, approval_img4,
+        approval_img5, approval_img6, approval_img7, approval_img8, approval_img9, remark, k_integral, type_id
+          from integral_approval
+    </sql>
+	
+    <select id="selectIntegralApprovalList" parameterType="IntegralApproval" resultMap="IntegralApprovalResult">
+        <include refid="selectIntegralApprovalVo"/>
+        <where>
+            <if test="approvalId != null "> and approval_id = #{approvalId}</if>
+            <if test="approvalTitle != null  and approvalTitle != '' ">
+                and approval_title  like concat('%', #{approvalTitle}, '%')
+            </if>
+             <if test="approvalNum != null  and approvalNum != '' "> and approval_num = #{approvalNum}</if>
+             <if test="approvalContent != null  and approvalContent != '' "> and approval_content = #{approvalContent}</if>
+             <if test="userId != null "> and user_id = #{userId}</if>
+             <if test="userName != null  and userName != '' ">
+               and user_name  like concat('%', #{userName}, '%')
+             </if>
+             <if test="userImg != null  and userImg != '' "> and user_img = #{userImg}</if>
+             <if test="userPhone != null "> and user_phone = #{userPhone}</if>
+             <if test="userDept != null  and userDept != '' ">
+               and user_dept  like concat('%', #{userDept}, '%')
+             </if>
+             <if test="userDeptId != null "> and user_dept_id = #{userDeptId}</if>
+             <if test="userPostId != null "> and user_post_id = #{userPostId}</if>
+             <if test="userPost != null  and userPost != '' ">
+                 and user_post = #{userPost}
+             </if>
+             <if test="tiJiaoName != null  and tiJiaoName != '' "> and ti_jiao_name = #{tiJiaoName}</if>
+             <if test="tiJiaoNameImg != null "> and ti_jiao_name_img = #{tiJiaoNameImg}</if>
+             <if test="integralTypeId != null "> and integral_type_id = #{integralTypeId}</if>
+             <if test="sqTime != null "> and sq_time = #{sqTime}</if>
+             <if test="spTime != null "> and sp_time = #{spTime}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="sqIntegral != null "> and sq_integral = #{sqIntegral}</if>
+             <if test="spRemark != null  and spRemark != '' "> and sp_remark = #{spRemark}</if>
+             <if test="approvalTime != null "> and approval_time = #{approvalTime}</if>
+             <if test="approvalImg1 != null  and approvalImg1 != '' "> and approval_img1 = #{approvalImg1}</if>
+             <if test="approvalImg2 != null  and approvalImg2 != '' "> and approval_img2 = #{approvalImg2}</if>
+             <if test="approvalImg3 != null  and approvalImg3 != '' "> and approval_img3 = #{approvalImg3}</if>
+             <if test="approvalImg4 != null  and approvalImg4 != '' "> and approval_img4 = #{approvalImg4}</if>
+             <if test="approvalImg5 != null  and approvalImg5 != '' "> and approval_img5 = #{approvalImg5}</if>
+             <if test="approvalImg6 != null  and approvalImg6 != '' "> and approval_img6 = #{approvalImg6}</if>
+             <if test="approvalImg7 != null  and approvalImg7 != '' "> and approval_img7 = #{approvalImg7}</if>
+             <if test="approvalImg8 != null  and approvalImg8 != '' "> and approval_img8 = #{approvalImg8}</if>
+             <if test="approvalImg9 != null  and approvalImg9 != '' "> and approval_img9 = #{approvalImg9}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="kIntegral != null  and kIntegral != '' "> and k_integral = #{kIntegral}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(sq_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(sq_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="typeId != null  and typeId != '' "> and type_id = #{typeId}</if>
+         </where>
+        ORDER BY sq_time DESC
+    </select>
+    
+    <select id="selectIntegralApprovalById" parameterType="Integer" resultMap="IntegralApprovalResult">
+        <include refid="selectIntegralApprovalVo"/>
+        where approval_id = #{approvalId}
+    </select>
+        
+    <insert id="insertIntegralApproval" parameterType="IntegralApproval">
+        insert into integral_approval
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="approvalId != null  ">approval_id,</if>
+			<if test="approvalNum != null  and approvalNum != ''  ">approval_num,</if>
+			<if test="approvalTitle != null  and approvalTitle != ''  ">approval_title,</if>
+			<if test="approvalContent != null  and approvalContent != ''  ">approval_content,</if>
+			<if test="userId != null  ">user_id,</if>
+			<if test="userName != null  and userName != ''  ">user_name,</if>
+			<if test="userImg != null  and userImg != ''  ">user_img,</if>
+			<if test="userPhone != null  ">user_phone,</if>
+			<if test="userDept != null  and userDept != ''  ">user_dept,</if>
+			<if test="userDeptId != null  ">user_dept_id,</if>
+			<if test="userPostId != null  ">user_post_id,</if>
+			<if test="userPost != null  and userPost != ''  ">user_post,</if>
+			<if test="tiJiaoName != null  and tiJiaoName != ''  ">ti_jiao_name,</if>
+			<if test="tiJiaoNameImg != null  ">ti_jiao_name_img,</if>
+			<if test="integralTypeId != null  ">integral_type_id,</if>
+			<if test="sqTime != null  ">sq_time,</if>
+			<if test="spTime != null  ">sp_time,</if>
+			<if test="status != null  ">status,</if>
+			<if test="sqIntegral != null  ">sq_integral,</if>
+			<if test="spRemark != null  and spRemark != ''  ">sp_remark,</if>
+			<if test="approvalTime != null  ">approval_time,</if>
+			<if test="approvalImg1 != null  and approvalImg1 != ''  ">approval_img1,</if>
+			<if test="approvalImg2 != null  and approvalImg2 != ''  ">approval_img2,</if>
+			<if test="approvalImg3 != null  and approvalImg3 != ''  ">approval_img3,</if>
+			<if test="approvalImg4 != null  and approvalImg4 != ''  ">approval_img4,</if>
+			<if test="approvalImg5 != null  and approvalImg5 != ''  ">approval_img5,</if>
+			<if test="approvalImg6 != null  and approvalImg6 != ''  ">approval_img6,</if>
+			<if test="approvalImg7 != null  and approvalImg7 != ''  ">approval_img7,</if>
+			<if test="approvalImg8 != null  and approvalImg8 != ''  ">approval_img8,</if>
+			<if test="approvalImg9 != null  and approvalImg9 != ''  ">approval_img9,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">k_Integral,</if>
+            <if test="typeId != null  and typeId != '' ">type_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="approvalId != null  ">#{approvalId},</if>
+			<if test="approvalNum != null  and approvalNum != ''  ">#{approvalNum},</if>
+			<if test="approvalTitle != null  and approvalTitle != ''  ">#{approvalTitle},</if>
+			<if test="approvalContent != null  and approvalContent != ''  ">#{approvalContent},</if>
+			<if test="userId != null  ">#{userId},</if>
+			<if test="userName != null  and userName != ''  ">#{userName},</if>
+			<if test="userImg != null  and userImg != ''  ">#{userImg},</if>
+			<if test="userPhone != null  ">#{userPhone},</if>
+			<if test="userDept != null  and userDept != ''  ">#{userDept},</if>
+			<if test="userDeptId != null  ">#{userDeptId},</if>
+			<if test="userPostId != null  ">#{userPostId},</if>
+			<if test="userPost != null  and userPost != ''  ">#{userPost},</if>
+			<if test="tiJiaoName != null  and tiJiaoName != ''  ">#{tiJiaoName},</if>
+			<if test="tiJiaoNameImg != null  ">#{tiJiaoNameImg},</if>
+			<if test="integralTypeId != null  ">#{integralTypeId},</if>
+			<if test="sqTime != null  ">#{sqTime},</if>
+			<if test="spTime != null  ">#{spTime},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="sqIntegral != null  ">#{sqIntegral},</if>
+			<if test="spRemark != null  and spRemark != ''  ">#{spRemark},</if>
+			<if test="approvalTime != null  ">#{approvalTime},</if>
+			<if test="approvalImg1 != null  and approvalImg1 != ''  ">#{approvalImg1},</if>
+			<if test="approvalImg2 != null  and approvalImg2 != ''  ">#{approvalImg2},</if>
+			<if test="approvalImg3 != null  and approvalImg3 != ''  ">#{approvalImg3},</if>
+			<if test="approvalImg4 != null  and approvalImg4 != ''  ">#{approvalImg4},</if>
+			<if test="approvalImg5 != null  and approvalImg5 != ''  ">#{approvalImg5},</if>
+			<if test="approvalImg6 != null  and approvalImg6 != ''  ">#{approvalImg6},</if>
+			<if test="approvalImg7 != null  and approvalImg7 != ''  ">#{approvalImg7},</if>
+			<if test="approvalImg8 != null  and approvalImg8 != ''  ">#{approvalImg8},</if>
+			<if test="approvalImg9 != null  and approvalImg9 != ''  ">#{approvalImg9},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">#{kIntegral},</if>
+            <if test="typeId != null  and typeId != '' ">#{typeId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateIntegralApproval" parameterType="IntegralApproval">
+        update integral_approval
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="approvalNum != null  and approvalNum != ''  ">approval_num = #{approvalNum},</if>
+            <if test="approvalTitle != null  and approvalTitle != ''  ">approval_title = #{approvalTitle},</if>
+            <if test="approvalContent != null  and approvalContent != ''  ">approval_content = #{approvalContent},</if>
+            <if test="userId != null  ">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+            <if test="userImg != null  and userImg != ''  ">user_img = #{userImg},</if>
+            <if test="userPhone != null  ">user_phone = #{userPhone},</if>
+            <if test="userDept != null  and userDept != ''  ">user_dept = #{userDept},</if>
+            <if test="userDeptId != null  ">user_dept_id = #{userDeptId},</if>
+            <if test="userPostId != null  ">user_post_id = #{userPostId},</if>
+            <if test="userPost != null  and userPost != ''  ">user_post = #{userPost},</if>
+            <if test="tiJiaoName != null  and tiJiaoName != ''  ">ti_jiao_name = #{tiJiaoName},</if>
+            <if test="tiJiaoNameImg != null  ">ti_jiao_name_img = #{tiJiaoNameImg},</if>
+            <if test="integralTypeId != null  ">integral_type_id = #{integralTypeId},</if>
+            <if test="sqTime != null  ">sq_time = #{sqTime},</if>
+            <if test="spTime != null  ">sp_time = #{spTime},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="sqIntegral != null  ">sq_integral = #{sqIntegral},</if>
+            <if test="spRemark != null  and spRemark != ''  ">sp_remark = #{spRemark},</if>
+            <if test="approvalTime != null  ">approval_time = #{approvalTime},</if>
+            <if test="approvalImg1 != null  and approvalImg1 != ''  ">approval_img1 = #{approvalImg1},</if>
+            <if test="approvalImg2 != null  and approvalImg2 != ''  ">approval_img2 = #{approvalImg2},</if>
+            <if test="approvalImg3 != null  and approvalImg3 != ''  ">approval_img3 = #{approvalImg3},</if>
+            <if test="approvalImg4 != null  and approvalImg4 != ''  ">approval_img4 = #{approvalImg4},</if>
+            <if test="approvalImg5 != null  and approvalImg5 != ''  ">approval_img5 = #{approvalImg5},</if>
+            <if test="approvalImg6 != null  and approvalImg6 != ''  ">approval_img6 = #{approvalImg6},</if>
+            <if test="approvalImg7 != null  and approvalImg7 != ''  ">approval_img7 = #{approvalImg7},</if>
+            <if test="approvalImg8 != null  and approvalImg8 != ''  ">approval_img8 = #{approvalImg8},</if>
+            <if test="approvalImg9 != null  and approvalImg9 != ''  ">approval_img9 = #{approvalImg9},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="kIntegral != null  and  kIntegral != '' ">k_Integral = #{kIntegral},</if>
+            <if test="typeId != null  and typeId != '' ">type_id = #{typeId},</if>
+        </trim>
+        where approval_id = #{approvalId}
+    </update>
+
+	<delete id="deleteIntegralApprovalById" parameterType="Integer">
+        delete from integral_approval where approval_id = #{approvalId}
+    </delete>
+	
+    <delete id="deleteIntegralApprovalByIds" parameterType="String">
+        delete from integral_approval where approval_id in 
+        <foreach item="approvalId" collection="array" open="(" separator="," close=")">
+            #{approvalId}
+        </foreach>
+    </delete>
+    <!--积分榜 excel 导出-->
+    <select id="selectIntegralBangExeclLists"  parameterType="IntegralApproval" resultType="map" >
+            SELECT @rownum:=@rownum+1 AS rownum,IF(@total = count ,@rank ,@rank :=@rownum) AS rank ,
+                    @total := count as total, integral_approval.*  FROM(
+            select
+            u.user_id as userId,
+            u.user_name  as username,
+            a.user_dept as deptName,
+            a.user_dept_id as deptId,
+            a.user_post as post,
+            a.user_post_id as postId,
+            sum(a.sq_integral) - sum(a.k_integral) + u.ji_chu_integral as count,
+            sum(a.k_integral)as amount,
+            a.sp_time as spTime,
+            a.integral_type_id as integralTypeId ,
+            u.ji_chu_integral as base
+            from integral_approval AS a,
+            sys_user as u
+            where   a.user_id = u.user_id and a.status ='1'
+           <if test="userName !=null and userName !=''" >
+               and a.user_name like concat('%', #{userName}, '%')
+           </if>
+          <if test="userDeptId !=null and userDeptId !=''" >
+              and a.user_dept_id = #{userDeptId}
+          </if>
+           <if test="userPostId !=null and userPostId !=''" >
+              and a.user_post_id = #{userPostId}
+           </if>
+           <if test="integralTypeId !=null and integralTypeId !=''" >
+               and a.integral_type_id = #{integralTypeId}
+           </if>
+           <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+               AND date_format(a.sp_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+           </if>
+           <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+               AND date_format(a.sp_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+           </if>
+            GROUP BY userId
+            ORDER BY count DESC ) as integral_approval,
+                    (    SELECT    @rank := 0 ,@rownum := 0 ,@total := NULL    ) as t
+   </select>
+    <!--查询每一种类型的总积分-->
+    <select id="selectCount"  resultType="int">
+        select sum(a.sq_integral) as aa from integral_approval a where a.user_id =#{userId} and a.integral_type_id = #{integralTypeId}
+         and  a.status =1
+    </select>
+    <!-- 根据用户id 查询积分类型 -->
+    <select id="selectByUserIdGetType" resultType="map" >
+        select a.integral_type_id  as integralTypeId  from integral_approval a
+        where a.user_id =#{userId}  and  a.status =1
+
+    </select>
+    <!--批量保存 -->
+    <insert id ="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty= "approvalId">
+        insert into integral_approval
+        (approval_id,approval_num,approval_title,approval_content,user_id,user_name,user_img,user_phone,user_dept,
+            user_dept_id,user_post_id,user_post,ti_jiao_name,ti_jiao_name_img,integral_type_id,sq_time,sp_time,status,sq_integral,sp_remark,approval_time,
+            approval_img1,approval_img2,approval_img3,approval_img4,approval_img5,approval_img6,approval_img7,approval_img8,approval_img9,
+            remark,k_Integral,type_id)
+        values
+        <foreach collection ="list" item="ia" index= "index" separator =",">
+            (#{ia.approvalId},#{ia.approvalNum},#{ia.approvalTitle},#{ia.approvalContent},#{ia.userId},#{ia.userName},#{ia.userImg},#{ia.userPhone},#{ia.userDept},#{ia.userDeptId},
+                #{ia.userPostId},#{ia.userPost},#{ia.tiJiaoName},#{ia.tiJiaoNameImg},#{ia.integralTypeId},#{ia.sqTime},#{ia.spTime},#{ia.status},#{ia.sqIntegral},#{ia.spRemark},
+                #{ia.approvalTime},#{ia.approvalImg1},#{ia.approvalImg2},#{ia.approvalImg3},#{ia.approvalImg4},#{ia.approvalImg5},#{ia.approvalImg6},#{ia.approvalImg7},#{ia.approvalImg8},
+                #{ia.approvalImg9},#{ia.remark},#{ia.kIntegral},#{ia.typeId})
+        </foreach >
+    </insert>
+</mapper>

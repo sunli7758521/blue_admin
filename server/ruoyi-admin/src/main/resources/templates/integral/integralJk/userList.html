@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+	<div class="ui-layout-west">
+		<div class="main-content">
+			<div class="box box-main">
+				<div class="box-header">
+					<div class="box-title">
+						<i class="fa icon-grid"></i> 组织机构
+					</div>
+					<div class="box-tools pull-right">
+					    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="dept()" title="管理部门"><i class="fa fa-edit"></i></a>
+						<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+						<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+						<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+					</div>
+				</div>
+				<div class="ui-layout-content">
+					<div id="tree" class="ztree"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-div ui-layout-center">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="user-form">
+					<input type="hidden" id="deptId" name="deptId">
+	                <input type="hidden" id="parentId" name="parentId">
+					<div class="select-list">
+						<ul>
+							<li>
+								用户名称：<input type="text" name="userName"/>
+							</li>
+							<li>
+								手机号码：<input type="text" name="phonenumber"/>
+							</li>
+							<li>
+								是否在职：<select name="status" th:with="type=${@dict.getType('sys_zl_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								是否参加积分：<select  name="integralStatus" th:with="type=${@dict.getType('sys_jf_status')}">
+								<option value="">所有</option>
+								<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+	            <a class="btn btn-primary btn-del disabled" onclick="$.operate.manageAll()" shiro:hasPermission="integral:integralJkUser:add">
+	                <i class="fa fa-plus"></i> 选择奖扣
+	            </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+	<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+	<script th:inline="javascript">
+		var editFlag = [[${@permission.hasPermi('system:user:edit')}]];
+		var removeFlag = [[${@permission.hasPermi('integral:integralJkUser:add')}]];
+		var resetPwdFlag = [[${@permission.hasPermi('system:user:resetPwd')}]];
+        var departureFlag = [[${@permission.hasPermi('system:user:departure')}]];
+        var integralFlag = [[${@permission.hasPermi('system:user:integral')}]];
+		var datas = [[${@dict.getType('sys_zl_status')}]];
+        var da = [[${@dict.getType('sys_jf_status')}]];
+		var prefix = ctx + "integral/integralJkUser";
+
+		$(function() {
+			$('body').layout({ west__size: 185 });
+			queryUserList();
+			queryDeptTree();
+		});
+
+		function queryUserList() {
+		    var options = {
+		        url: prefix + "/list",
+		       // createUrl: prefix + "/add",
+		        updateUrl: prefix + "/edit/{id}",
+                departureUrl: prefix + "/departure/{status}",
+		        removeUrl: prefix + "/remove",
+                manageUrl: prefix + "/add",
+		        exportUrl: prefix + "/export",
+		        sortName: "createTime",
+		        sortOrder: "desc",
+		        modalName: "用户",
+		        search: false,
+		        showExport: false,
+				// height: $(window.innerHeight)[0] - 170,
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'userId',
+		            title: '用户ID',
+                    visible: false
+		        },
+                    {
+                        formatter: function (value, row, index) {
+                            return index+ 1;
+                        }
+                    },
+               {
+				    field: 'avatar',
+                    title: '头像',
+					formatter: function(value, row, index) {
+					   if (value) {
+						   return `<img src=${value} width="100" height="100"></img>`
+					   } else {
+						   return '没有上传头像'
+					   }
+					}
+                },
+		        {
+		            field: 'loginName',
+		            title: '登录名称',
+		            sortable: true
+		        },
+		        {
+		            field: 'userName',
+		            title: '用户名称'
+		        },
+		        {
+		            field: 'dept.deptName',
+		            title: '部门',
+					width: '140px'
+		        },
+                // {
+				// 	field: 'roleName',
+                //     title: '角色',
+				// 	width: '140px',
+                //     formatter: function (value, row, index) {
+                //         switch (value) {
+                //             case '管理员': return `<span style="color: darkgreen">${value}</span>`;
+                //             case '普通角色': return `<span style="color: peru">${value}</span>`;
+                //             case '超级管理员': return `<span style="color: burlywood">${value}</span>`;
+                //         }
+                //     }
+                // },
+				// 	{
+				// 	    field: 'isApprover',
+				// 		title: '是否为审批人',
+				// 		formatter: function (value, row, index) {
+                //             switch (value) {
+                //                 case 3: return '';
+                //                 case 1: return '<span class="badge badge-warning">普通审批人</span>';
+				// 				case 2: return '<span class="badge badge-info">高级审批人</span>';
+                //             }
+                //         }
+				// 	},
+		        {
+		            field: 'email',
+		            title: '邮箱',
+		            visible: false
+		        },
+		        {
+		            field: 'phonenumber',
+		            title: '手机'
+		        },
+               /* {
+					field: 'integral',
+                    title: '积分'
+                 },
+                 {
+                    field: 'jiChuIntegral',
+					title: '基础积分'
+                  },
+                 {
+                     field: 'biaoIntegral',
+                     title: '表扬积分'
+                  },
+                  {
+                      field: 'loveIntegral',
+                      title: '爱心积分'
+                   },*/
+		        {
+		            field: 'status',
+		            title: '状态',
+		            formatter: function(value, row, index) {
+		            	return $.table.selectDictLabel(datas, value);
+		            }
+		        },
+                {
+                     field: 'integralStatus',
+                     title: '是否参与积分排名',
+                    formatter: function(value, row, index) {
+
+                        return $.table.selectDictLabel(da, value);
+                    }
+                 },
+		        {
+		            field: 'createTime',
+		            title: '创建时间',
+		            sortable: true
+		        },
+                {
+                    field: 'loginDate',
+                    title: '最后登陆时间',
+                    sortable: true
+                 },
+		        // {
+		        //     title: '操作',
+				// 	width: '430px',
+		        //     formatter: function(value, row, index) {
+		        //         var actions = [];
+                //         if (row.integralStatus == 1) {
+		        //             if (row.status == 0) {
+                //                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + departureFlag + '" href="#" onclick="departure(\'' + row.userId + '\',\'' + row.status + '\')"><i class="fa fa-remove"></i>离职员工</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + integralFlag + '" href="#" onclick="integral(\'' + row.userId + '\',\'' + row.integralStatus + '\')"><i class="fa fa-remove"></i>不参与积分排名</a> ');
+                //                 actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a> ');
+				//
+                //             } else if (row.status == 1){
+                //                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+				// 				actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+				// 				actions.push('<a class="btn btn-danger btn-xs ' + integralFlag + '" href="#" onclick="integral(\'' + row.userId + '\',\'' + row.integralStatus + '\')"><i class="fa fa-remove"></i>不参与积分排名</a> ');
+				// 				actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a> ');
+				// 			}
+                //         } else if (row.integralStatus == 2) {
+		        //             if (row.status == 0) {
+                //                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + departureFlag + '" href="#" onclick="departure(\'' + row.userId + '\',\'' + row.status + '\')"><i class="fa fa-remove"></i>离职员工</a> ');
+                //                 actions.push('<a class="btn btn-primary btn-xs ' + integralFlag + '" href="#" onclick="integral(\'' + row.userId + '\',\'' + row.integralStatus + '\')"><i class="fa fa-arrow-right"></i>参与积分排名</a> ');
+                //                 actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a> ');
+                //             } else if (row.status == 1) {
+                //                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //                 actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                //                 actions.push('<a class="btn btn-primary btn-xs ' + integralFlag + '" href="#" onclick="integral(\'' + row.userId + '\',\'' + row.integralStatus + '\')"><i class="fa fa-arrow-right"></i>参与积分排名</a> ');
+                //                 actions.push('<a class="btn btn-info btn-xs ' + resetPwdFlag + '" href="#" onclick="resetPwd(\'' + row.userId + '\')"><i class="fa fa-key"></i>重置</a> ');
+				// 			}
+				// 		}
+                //         actions.push('<a class="btn btn-warning btn-xs ' + resetPwdFlag + '" href="#" onclick="app(\'' + row.userId + '\',\'' + row.isApprover + '\')"><i class="fa fa-angle-double-up"></i>设置审批人</a> ');
+                //         return actions.join('');
+		        //     }
+		        // }
+		        ]
+		    };
+		    $.table.init(options);
+		}
+		
+		function queryDeptTree()
+		{
+			var url = ctx + "system/dept/treeData";
+			var options = {
+		        url: url,
+		        expandLevel: 2,
+		        onClick : zOnClick
+		    };
+			$.tree.init(options);
+			
+			function zOnClick(event, treeId, treeNode) {
+				$("#deptId").val(treeNode.id);
+				$("#parentId").val(treeNode.pId);
+				$.table.search();
+			}
+		}
+		
+		$('#btnExpand').click(function() {
+			$._tree.expandAll(true);
+		    $(this).hide();
+		    $('#btnCollapse').show();
+		});
+		
+		$('#btnCollapse').click(function() {
+			$._tree.expandAll(false);
+		    $(this).hide();
+		    $('#btnExpand').show();
+		});
+		
+		$('#btnRefresh').click(function() {
+			queryDeptTree();
+		});
+
+		/*用户管理-部门*/
+		function dept() {
+			var url = ctx + "system/dept";
+			createMenuItem(url, "部门管理");
+		}
+
+		/** 用户管理-重置密码 */
+		function resetPwd(userId) {
+		    var url = prefix + '/resetPwd/' + userId;
+		    $.modal.open("重置密码", url, '800', '300');
+		}
+		/** 员工离职 */
+		function departure(userId, status) {
+            $.modal.confirm("确定该员工离职吗", function() {
+                var url = prefix + '/departure/' + userId +'/'+ status;
+                var data = {};
+                $.operate.submit(url, "get", "json", data);
+            });
+        }
+        /** 是否参与积分排名*/
+        function integral(userId, integralStatus) {
+            $.modal.confirm("是否确定？", function() {
+                var url = prefix + '/integral/' + userId +'/'+integralStatus;
+                var data = {};
+                $.operate.submit(url, "get", "json", data);
+            });
+        }
+        
+        function app(userId, isApprover) {
+            layer.open({
+                type: 1
+                ,title: '审批设置'
+                ,area: ['340px', '140px']
+                ,shade: 0
+                ,maxmin: true
+                ,content: '<div style="padding: 10px 0 0 40px; line-height: 22px;font-weight: 500;font-size: 15px;">请选择审批人的类型：</div>'
+                ,btn: ['普通审批人', '高级审批人', '取消审批人']
+                ,btnAlign: 'c'
+                ,yes: function(index, layero){
+                    var url = prefix + '/sysApp/' + userId + '/1';
+                    var data = {};
+                    $.operate.submit(url, "get", "json", data);
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    var url = prefix + '/sysApp/' + userId + '/2';
+                    var data = {};
+                    $.operate.submit(url, "get", "json", data);
+                }
+                ,btn3: function(index, layero){
+                    var url = prefix + '/sysApp/' + userId + '/3';
+                    var data = {};
+                    $.operate.submit(url, "get", "json", data);
+                }
+                ,shadeClose: true
+                ,cancel: function(index) {
+                    return true;
+                }
+            });
+        }
+	</script>
+</body>
+</html>

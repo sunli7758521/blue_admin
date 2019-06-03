@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-taskType-edit" th:object="${taskType}">
+            <input id="taskId" name="taskId" th:field="*{taskId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">任务类型名称：</label>
+                <div class="col-sm-8">
+                    <input id="taskName" name="taskName" th:field="*{taskName}" class="form-control" type="text">
+                </div>
+            </div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "task/taskType"
+		$("#form-taskType-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-taskType-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

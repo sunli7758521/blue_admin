@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <style>
+        body {
+            margin: 10px;
+            padding: 0;
+        }
+        ul, li{list-style: none;margin: 0;padding: 0}
+        a {
+            text-decoration:none;
+            -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+            -webkit-tap-highlight-color: transparent;
+            cursor:pointer;
+        }
+        a:active, a:hover {
+            outline: none;
+            text-decoration: none
+        }
+        h3{margin: 0;font-size: 24px;}
+        address{line-height: 32px}
+
+        .shuoming{margin-top: 20px; width: 650px; background-color: #fff;padding: 15px;border-radius: 4px;-webkit-border-radius: 4px}
+        .shuoming h4{color: #ff0000;margin: 0;margin-bottom: 6px}
+        .shuoming ul li{color: #0000FF;padding: 4px;font-size: 14px;}
+        .downLoad p{font-size: 14px;margin-bottom: 6px;margin-top: 20px}
+        .downLoad a{font-size: 12px;
+            padding: 4px;color: #fff;background-color: #f0ad4e;border-radius: 4px;-webkit-border-radius: 4px}
+    </style>
+</head>
+<body>
+<!--<iframe src="http://www.meisijia.cn/" frameborder="0" scrolling="no" id="iframe" style="border:0px;" onload="changeFrameHeight()" width="100%"></iframe>-->
+<h3>积分助手共享平台</h3>
+<address>河北省邢台市拓美科技</address>
+
+<div class="shuoming">
+    <h4>更新公告2019 5-19</h4>
+    <ul>
+        <li>1、暂无更新暂无更新暂无更新暂无更新</li>
+        <li>2、暂无更新</li>
+    </ul>
+    <div class="downLoad">
+        <p>下载积分助手员工端说明文档</p>
+        <a href="">积分助手员工端说明文档</a>
+        <p>下载积分助手后台设置说明文档</p>
+        <a href="">积分助手后台设置说明文档</a>
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    function changeFrameHeight(){
+        var ifm= document.getElementById("iframe");
+        ifm.height=document.documentElement.clientHeight;
+
+    }
+
+    window.onresize=function(){
+        changeFrameHeight();
+
+    }
+</script>
+</html>

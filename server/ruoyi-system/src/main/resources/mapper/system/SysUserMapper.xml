@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserMapper">
+
+	<resultMap type="SysUser" id="SysUserResult">
+		<id     property="userId"       column="user_id"      />
+		<result property="deptId"       column="dept_id"      />
+		<result property="loginName"    column="login_name"   />
+		<result property="userName"     column="user_name"    />
+		<result property="email"        column="email"        />
+		<result property="phonenumber"  column="phonenumber"  />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="salt"         column="salt"         />
+		<result property="status"       column="status"       />
+		<result property="delFlag"      column="del_flag"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<result property="integralComplainant"       column="integral_complainant"       />
+		<result property="jiChuIntegral"  column="ji_chu_integral" />
+		<result property="biaoIntegral"   column="biao_integral"   />
+		<result property="loveIntegral"   column="love_integral"   />
+		<result property="integralStatus"   column="integral_status"   />
+		<result property="isApprover"   column="is_approver"   />
+		<result property="roleName"   column="role_name"   />
+		<result property="applyIds"   column="apply_ids"   />
+		<result property="manAward"   column="man_award"   />
+		<association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+		<collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
+	</resultMap>
+	
+	<resultMap id="deptResult" type="SysDept">
+		<id     property="deptId"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="status"   column="dept_status" />
+	</resultMap>
+	
+	<resultMap id="RoleResult" type="SysRole">
+		<id     property="roleId"       column="role_id"        />
+		<result property="roleName"     column="role_name"      />
+		<result property="roleKey"      column="role_key"       />
+		<result property="roleSort"     column="role_sort"      />
+		<result property="dataScope"     column="data_scope"    />
+		<result property="status"       column="role_status"    />
+	</resultMap>
+	
+	<sql id="selectUserVo">
+        select  u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.phonenumber, u.sex, u.avatar, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark, u.integral_complainant, u.ji_chu_integral, u.biao_integral, u.love_integral, u.integral_status, u.is_approver,
+        		u.apply_ids, u.man_award,
+       		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.status as dept_status,
+       		    r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
+		from sys_user u
+			 left join sys_dept d on u.dept_id = d.dept_id
+			 left join sys_user_role ur on u.user_id = ur.user_id
+			 left join sys_role r on r.role_id = ur.role_id
+    </sql>
+	<!-- u.del_flag = '0' -->
+	<select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
+		select s.role_name, u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.integral_complainant, u.ji_chu_integral, u.biao_integral, u.love_integral, u.integral_status,u.is_approver,u.apply_ids,u.man_award, d.dept_name from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		LEFT JOIN sys_role s ON s.role_id = u.user_id
+
+		<where>
+			<if test="userName != null and userName != ''">
+				u.user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND u.status = #{status}
+			</if>
+			<if test="integralStatus != null  and  integralStatus != ''">
+				AND u.integral_status = #{integralStatus}
+			</if>
+			<if test="phonenumber != null and phonenumber != ''">
+				AND u.phonenumber like concat('%', #{phonenumber}, '%')
+			</if>
+			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+			<if test="deptId != null and deptId != 0">
+				AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+			</if>
+		</where>
+
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+        ORDER BY u.create_time asc
+	</select>
+	
+	<select id="selectUserByLoginName" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.login_name = #{userName}
+	</select>
+	
+	<select id="selectUserByPhoneNumber" parameterType="String" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.phonenumber = #{phonenumber}
+	</select>
+	
+	<select id="selectUserByEmail" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.email = #{email}
+	</select>
+	
+	<select id="checkLoginNameUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where login_name=#{loginName}
+	</select>
+	
+	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
+		select user_id, phonenumber from sys_user where phonenumber=#{phonenumber}
+	</select>
+	
+	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
+		select user_id, email from sys_user where email=#{email}
+	</select>
+	
+	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.user_id = #{userId}
+	</select>
+	
+	<delete id="deleteUserById" parameterType="Long">
+ 		delete from sys_user where user_id = #{userId}
+ 	</delete>
+ 	<!-- 删除功能  update sys_user set del_flag = '2' where user_id in -->
+ 	<delete id="deleteUserByIds" parameterType="Long">
+		DELETE from sys_user where sys_user.user_id in
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach> 
+ 	</delete>
+ 	
+ 	<update id="updateUser" parameterType="SysUser">
+ 		update sys_user
+ 		<set>
+ 			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+ 			<if test="loginName != null and loginName != ''">login_name = #{loginName},</if>
+ 			<if test="userName != null and userName != ''">user_name = #{userName},</if>
+ 			<if test="email != null and email != ''">email = #{email},</if>
+ 			<if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+ 			<if test="sex != null and sex != ''">sex = #{sex},</if>
+ 			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+ 			<if test="password != null and password != ''">password = #{password},</if>
+ 			<if test="salt != null and salt != ''">salt = #{salt},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+ 			<if test="loginDate != null">login_date = #{loginDate},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			<if test="integralComplainant != null and integralComplainant != ''">integral_complainant = #{integralComplainant},</if>
+			<if test="jiChuIntegral != null and jiChuIntegral != ''">ji_chu_integral = #{jiChuIntegral},</if>
+			<if test="biaoIntegral != null and biaoIntegral != ''">biao_integral = #{biaoIntegral},</if>
+			<if test="loveIntegral != null and loveIntegral != ''">love_integral = #{loveIntegral},</if>
+			<if test="integralStatus != null and integralStatus != ''">integral_status = #{integralStatus},</if>
+			<if test="isApprover != null and isApprover != ''">is_approver = #{isApprover},</if>
+			<if test="applyIds != null and applyIds != ''">apply_ids = #{applyIds},</if>
+			<if test="manAward != null and manAward != ''">man_award = #{manAward},</if>
+
+			update_time = sysdate()
+ 		</set>
+ 		where user_id = #{userId}
+	</update>
+ 	
+ 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
+ 		insert into sys_user(
+ 			<if test="userId != null and userId != 0">user_id,</if>
+ 			<if test="deptId != null and deptId != 0">dept_id,</if>
+ 			<if test="loginName != null and loginName != ''">login_name,</if>
+ 			<if test="userName != null and userName != ''">user_name,</if>
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
+ 			<if test="sex != null and sex != ''">sex,</if>
+ 			<if test="password != null and password != ''">password,</if>
+ 			<if test="salt != null and salt != ''">salt,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+			<if test="integralComplainant != null and integralComplainant != ''">integral_complainant,</if>
+			<if test="jiChuIntegral != null and jiChuIntegral != ''">ji_chu_integral,</if>
+			<if test="biaoIntegral != null and biaoIntegral != ''">biao_integral,</if>
+			<if test="loveIntegral != null and loveIntegral != ''">love_integral,</if>
+			<if test="integralStatus != null and integralStatus != ''">integral_status,</if>
+		    <if test="isApprover != null and isApprover != ''">is_approver,</if>
+			<if test="applyIds != null and applyIds != ''">apply_ids,</if>
+		    <if test="manAward != null and manAward != ''">man_award,</if>
+ 			create_time
+ 		)values(
+ 			<if test="userId != null and userId != ''">#{userId},</if>
+ 			<if test="deptId != null and deptId != ''">#{deptId},</if>
+ 			<if test="loginName != null and loginName != ''">#{loginName},</if>
+ 			<if test="userName != null and userName != ''">#{userName},</if>
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
+ 			<if test="sex != null and sex != ''">#{sex},</if>
+ 			<if test="password != null and password != ''">#{password},</if>
+ 			<if test="salt != null and salt != ''">#{salt},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+		    <if test="integralComplainant != null and integralComplainant != ''">#{integralComplainant},</if>
+			<if test="jiChuIntegral != null and jiChuIntegral != ''">#{jiChuIntegral},</if>
+			<if test="biaoIntegral != null and biaoIntegral != ''">#{biaoIntegral},</if>
+			<if test="loveIntegral != null and loveIntegral != ''">#{loveIntegral},</if>
+			<if test="integralStatus != null and integralStatus != ''">#{integralStatus},</if>
+		    <if test="isApprover != null and isApprover != ''">#{isApprover},</if>
+			<if test="applyIds != null and applyIds != ''">#{applyIds},</if>
+			<if test="manAward != null and manAward != ''">#{manAward},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+
+
+    <insert id="insertUser2" parameterType="SysUser">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="userId != null and userId != 0">user_id,</if>
+        <if test="deptId != null and deptId != 0">dept_id,</if>
+        <if test="loginName != null and loginName != ''">login_name,</if>
+        <if test="userName != null and userName != ''">user_name,</if>
+        <if test="email != null and email != ''">email,</if>
+        <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
+        <if test="sex != null and sex != ''">sex,</if>
+        <if test="password != null and password != ''">password,</if>
+        <if test="salt != null and salt != ''">salt,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        <if test="integralComplainant != null and integralComplainant != ''">integral_complainant,</if>
+        <if test="jiChuIntegral != null and jiChuIntegral != ''">ji_chu_integral,</if>
+        <if test="biaoIntegral != null and biaoIntegral != ''">biao_integral,</if>
+        <if test="loveIntegral != null and loveIntegral != ''">love_integral,</if>
+        <if test="integralStatus != null and integralStatus != ''">integral_status,</if>
+        <if test="isApprover != null and isApprover != ''">is_approver,</if>
+        <if test="applyIds != null and applyIds != ''">apply_ids,</if>
+        <if test="manAward != null and manAward != ''">man_award,</if>
+			<if test="createTime != null ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="userId != null and userId != ''">#{userId},</if>
+        <if test="deptId != null and deptId != ''">#{deptId},</if>
+        <if test="loginName != null and loginName != ''">#{loginName},</if>
+        <if test="userName != null and userName != ''">#{userName},</if>
+        <if test="email != null and email != ''">#{email},</if>
+        <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
+        <if test="sex != null and sex != ''">#{sex},</if>
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="salt != null and salt != ''">#{salt},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        <if test="integralComplainant != null and integralComplainant != ''">#{integralComplainant},</if>
+        <if test="jiChuIntegral != null and jiChuIntegral != ''">#{jiChuIntegral},</if>
+        <if test="biaoIntegral != null and biaoIntegral != ''">#{biaoIntegral},</if>
+        <if test="loveIntegral != null and loveIntegral != ''">#{loveIntegral},</if>
+        <if test="integralStatus != null and integralStatus != ''">#{integralStatus},</if>
+        <if test="isApprover != null and isApprover != ''">#{isApprover},</if>
+        <if test="applyIds != null and applyIds != ''">#{applyIds},</if>
+        <if test="manAward != null and manAward != ''">#{manAward},</if>
+			<if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+
+
+
+
+
+
+	<!--通过部门id 和 姓名查询员工-->
+	<select id="selectUserNameAndDeptId" resultMap="SysUserResult" >
+		select u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.phonenumber, u.password, u.sex, u.avatar, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.integral_complainant, u.ji_chu_integral, u.biao_integral, u.love_integral, u.integral_status from sys_user u
+        WHERE u.dept_id = #{deptId} and u.user_name= #{jkName}
+	</select>
+	<!--查询所有员工-->
+	<select id="getUserName"  resultMap="SysUserResult"  >
+		<include refid="selectUserVo"/>
+		where  u.status = 0
+	</select>
+	<!--查询所用本部门员工-->
+	<select id="selectDeptUser" resultMap="SysUserResult" >
+		SELECT sys_user.user_id , sys_user.user_name,sys_user.dept_id  from sys_user  WHERE del_flag ='0' AND status ='0' and sys_user.dept_id = #{deptId}
+	</select>
+	<!-- 根据用户id 查询用户的基础积分 -->
+	<select id="selectUserBase" resultType="int" >
+		select u.ji_chu_integral as base from sys_user u where u.user_id = #{userId}
+	</select>
+
+	<!-- 根据用户、部门、职位名称，查询 -->
+	<select id="findByudpName"  resultType="com.ruoyi.system.domain.SysUser">
+		SELECT
+			a.user_id userId,
+			a.user_name userName,
+		  	b.dept_id deptId,
+			b.dept_name remark,
+		  	d.post_id postId,
+		  	d.post_name postName,
+		  	a.phonenumber phonenumber
+		FROM
+			sys_user a
+		INNER JOIN sys_dept b ON a.dept_id = b.dept_id
+		INNER JOIN sys_user_post c ON a.user_id = c.user_id
+		INNER JOIN sys_post d ON c.post_id = d.post_id
+		WHERE
+			a.status = 0
+		AND a.user_name = #{userName}
+		AND b.dept_name = #{deptName}
+		AND d.post_name = #{postName}
+	</select>
+
+	<!--批量更新 -->
+	<update id ="updateUserBatch" parameterType="java.util.List">
+		update sys_user
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="dept_id =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.deptId!=null">
+						when user_id=#{cus.userId} then #{cus.deptId}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="login_name =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.loginName!=null">
+						when user_id=#{cus.userId} then #{cus.loginName}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="user_name =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.userName!=null">
+						when user_id=#{cus.userId} then #{cus.userName}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="email =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.email!=null">
+						when user_id=#{cus.userId} then #{cus.email}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="phonenumber =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.phonenumber!=null">
+						when user_id=#{cus.userId} then #{cus.phonenumber}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="sex =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.sex!=null">
+						when user_id=#{cus.userId} then #{cus.sex}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="avatar =case" suffix="end,">
+			<foreach collection="list" item="cus">
+				<if test="cus.avatar!=null">
+					when user_id=#{cus.userId} then #{cus.avatar}
+				</if>
+			</foreach>
+		</trim>
+			<trim prefix="password =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.password!=null">
+						when user_id=#{cus.userId} then #{cus.password}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="salt =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.salt!=null">
+						when user_id=#{cus.userId} then #{cus.salt}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="status =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.status!=null">
+						when user_id=#{cus.userId} then #{cus.status}
+					</if>
+				</foreach>
+			</trim>
+
+			<trim prefix="del_flag =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.delFlag!=null">
+						when user_id=#{cus.userId} then #{cus.delFlag}
+					</if>
+				</foreach>
+			</trim>
+
+			<trim prefix="login_ip =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.loginIp!=null">
+						when user_id=#{cus.userId} then #{cus.loginIp}
+					</if>
+				</foreach>
+			</trim>
+
+			<trim prefix="login_date =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.loginDate!=null">
+						when user_id=#{cus.userId} then #{cus.loginDate}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="create_by =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.createBy!=null">
+						when user_id=#{cus.userId} then #{cus.createBy}
+					</if>
+				</foreach>
+			</trim>
+
+			<trim prefix="create_time =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.createTime!=null">
+						when user_id=#{cus.userId} then #{cus.createTime}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="update_by =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.updateBy!=null">
+						when user_id=#{cus.userId} then #{cus.updateBy}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="update_time =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.updateTime!=null">
+						when user_id=#{cus.userId} then #{cus.updateTime}
+					</if>
+				</foreach>
+			</trim><trim prefix="remark =case" suffix="end,">
+			<foreach collection="list" item="cus">
+				<if test="cus.remark!=null">
+					when user_id=#{cus.userId} then #{cus.remark}
+				</if>
+			</foreach>
+		</trim>
+			<trim prefix="integral_complainant =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.integralComplainant!=null">
+						when user_id=#{cus.userId} then #{cus.integralComplainant}
+					</if>
+				</foreach>
+			</trim><trim prefix="ji_chu_integral =case" suffix="end,">
+			<foreach collection="list" item="cus">
+				<if test="cus.jiChuIntegral!=null">
+					when user_id=#{cus.userId} then #{cus.jiChuIntegral}
+				</if>
+			</foreach>
+		</trim>
+			<trim prefix="biao_integral =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.biaoIntegral!=null">
+						when user_id=#{cus.userId} then #{cus.biaoIntegral}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="love_integral =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.loveIntegral!=null">
+						when user_id=#{cus.userId} then #{cus.loveIntegral}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="integral_status =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.integralStatus!=null">
+						when user_id=#{cus.userId} then #{cus.integralStatus}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="is_approver =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.isApprover!=null">
+						when user_id=#{cus.userId} then #{cus.isApprover}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="apply_ids =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.applyIds!=null">
+						when user_id=#{cus.userId} then #{cus.applyIds}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="man_award =case" suffix="end,">
+				<foreach collection="list" item="cus">
+					<if test="cus.manAward!=null">
+						when user_id=#{cus.userId} then #{cus.manAward}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		<where>
+			<foreach collection="list" separator="or" item="cus">
+				user_id  = #{cus.userId}
+			</foreach>
+		</where>
+	</update>
+	<!-- 统计所用人数 -->
+	<select id="selectCountUserNum" resultType="int">
+			select COUNT(1) from  sys_user
+	</select>
+</mapper> 

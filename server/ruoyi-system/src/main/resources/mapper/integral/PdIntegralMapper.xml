@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.PdIntegralMapper">
+    
+    <resultMap type="PdIntegral" id="PdIntegralResult">
+        <result property="behaviorId"    column="behavior_id"    />
+        <result property="behaviorCategory"    column="behavior_category"    />
+        <result property="behaviorTitle"    column="behavior_title"    />
+        <result property="behaviorContent"    column="behavior_content"    />
+        <result property="shenQingFangShi"    column="shen_qing_fang_shi"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="zuiDuoIntegral"    column="zui_duo_integral"    />
+        <result property="zuiShaoIntegral"    column="zui_shao_integral"    />
+        <result property="integralFenJi"    column="integral_fen_ji"    />
+        <result property="yiWanChengCiShu"    column="yi_wan_cheng_ci_shu"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="menuId"   column="menu_id"   />
+        <result property="postName"    column="post_name"    />
+        <result property="deptName"   column="dept_name"   />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+    </resultMap>
+	
+	<sql id="selectPdIntegralVo">
+        select behavior_id, behavior_category, behavior_title, behavior_content, shen_qing_fang_shi, type_id, zui_duo_integral, zui_shao_integral, integral_fen_ji, yi_wan_cheng_ci_shu, status, create_time, update_time, remark, dept_id, post_id, menu_id, post_name,dept_name  from pd_integral
+    </sql>
+	
+    <select id="selectPdIntegralList" parameterType="PdIntegral" resultMap="PdIntegralResult">
+        <include refid="selectPdIntegralVo"/>
+        <where>  
+            <if test="behaviorId != null "> and behavior_id = #{behaviorId}</if>
+             <if test="behaviorCategory != null  and behaviorCategory != '' ">
+                 and behavior_category like concat('%', #{behaviorCategory}, '%')
+             </if>
+            <if test="behaviorTitle != null  and behaviorTitle != '' ">
+                and behavior_title like concat('%', #{behaviorTitle}, '%')
+            </if>
+             <if test="behaviorContent != null  and behaviorContent != '' "> and behavior_content = #{behaviorContent}</if>
+             <if test="shenQingFangShi != null  and shenQingFangShi != '' "> and shen_qing_fang_shi = #{shenQingFangShi}</if>
+             <if test="typeId != null "> and type_id = #{typeId}</if>
+             <if test="zuiDuoIntegral != null  and zuiDuoIntegral != '' "> and zui_duo_integral = #{zuiDuoIntegral}</if>
+             <if test="zuiShaoIntegral != null  and zuiShaoIntegral != '' "> and zui_shao_integral = #{zuiShaoIntegral}</if>
+             <if test="integralFenJi != null "> and integral_fen_ji = #{integralFenJi}</if>
+             <if test="yiWanChengCiShu != null "> and yi_wan_cheng_ci_shu = #{yiWanChengCiShu}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="menuId != null  "> and menu_id = #{menuId}</if>
+            <if test="postName != null  "> and post_name = #{postName}</if>
+            <if test="deptName != null "> and dept_name = #{deptName}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="postId != null  "> and post_id = #{postId}</if>
+         </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectPdIntegralById" parameterType="Integer" resultMap="PdIntegralResult">
+        <include refid="selectPdIntegralVo"/>
+        where behavior_id = #{behaviorId}
+    </select>
+        
+    <insert id="insertPdIntegral" parameterType="PdIntegral">
+        insert into pd_integral
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="behaviorId != null  ">behavior_id,</if>
+			<if test="behaviorCategory != null  and behaviorCategory != ''  ">behavior_category,</if>
+			<if test="behaviorTitle != null  and behaviorTitle != ''  ">behavior_title,</if>
+			<if test="behaviorContent != null  and behaviorContent != ''  ">behavior_content,</if>
+			<if test="shenQingFangShi != null  and shenQingFangShi != ''  ">shen_qing_fang_shi,</if>
+			<if test="typeId != null  ">type_id,</if>
+			<if test="zuiDuoIntegral != null  and zuiDuoIntegral != ''  ">zui_duo_integral,</if>
+			<if test="zuiShaoIntegral != null  and zuiShaoIntegral != ''  ">zui_shao_integral,</if>
+			<if test="integralFenJi != null  ">integral_fen_ji,</if>
+			<if test="yiWanChengCiShu != null  ">yi_wan_cheng_ci_shu,</if>
+			<if test="status != null  ">status,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="menuId != null  ">menu_id,</if>
+            <if test="postName != null  ">post_name,</if>
+            <if test="deptName != null ">dept_name,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="postId != null  ">post_id ,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="behaviorId != null  ">#{behaviorId},</if>
+			<if test="behaviorCategory != null  and behaviorCategory != ''  ">#{behaviorCategory},</if>
+			<if test="behaviorTitle != null  and behaviorTitle != ''  ">#{behaviorTitle},</if>
+			<if test="behaviorContent != null  and behaviorContent != ''  ">#{behaviorContent},</if>
+			<if test="shenQingFangShi != null  and shenQingFangShi != ''  ">#{shenQingFangShi},</if>
+			<if test="typeId != null  ">#{typeId},</if>
+			<if test="zuiDuoIntegral != null  and zuiDuoIntegral != ''  ">#{zuiDuoIntegral},</if>
+			<if test="zuiShaoIntegral != null  and zuiShaoIntegral != ''  ">#{zuiShaoIntegral},</if>
+			<if test="integralFenJi != null  ">#{integralFenJi},</if>
+			<if test="yiWanChengCiShu != null  ">#{yiWanChengCiShu},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="menuId != null  ">#{menuId},</if>
+            <if test="postName != null  ">#{postName},</if>
+            <if test="deptName != null ">#{deptName},</if>
+            <if test="deptId != null "> #{deptId},</if>
+            <if test="postId != null  "> #{postId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePdIntegral" parameterType="PdIntegral">
+        update pd_integral
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="behaviorCategory != null  and behaviorCategory != ''  ">behavior_category = #{behaviorCategory},</if>
+            <if test="behaviorTitle != null  and behaviorTitle != ''  ">behavior_title = #{behaviorTitle},</if>
+            <if test="behaviorContent != null  and behaviorContent != ''  ">behavior_content = #{behaviorContent},</if>
+            <if test="shenQingFangShi != null  and shenQingFangShi != ''  ">shen_qing_fang_shi = #{shenQingFangShi},</if>
+            <if test="typeId != null  ">type_id = #{typeId},</if>
+            <if test="zuiDuoIntegral != null  and zuiDuoIntegral != ''  ">zui_duo_integral = #{zuiDuoIntegral},</if>
+            <if test="zuiShaoIntegral != null  and zuiShaoIntegral != ''  ">zui_shao_integral = #{zuiShaoIntegral},</if>
+            <if test="integralFenJi != null  ">integral_fen_ji = #{integralFenJi},</if>
+            <if test="yiWanChengCiShu != null  ">yi_wan_cheng_ci_shu = #{yiWanChengCiShu},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="menuId != null  ">menu_id = #{menuId},</if>
+            <if test="postName != null  ">post_name = #{postName},</if>
+            <if test="deptName != null ">dept_name = #{deptName},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="postId != null  ">post_id = #{postId},</if>
+        </trim>
+        where behavior_id = #{behaviorId}
+    </update>
+
+	<delete id="deletePdIntegralById" parameterType="Integer">
+        delete from pd_integral where behavior_id = #{behaviorId}
+    </delete>
+	
+    <delete id="deletePdIntegralByIds" parameterType="String">
+        delete from pd_integral where behavior_id in 
+        <foreach item="behaviorId" collection="array" open="(" separator="," close=")">
+            #{behaviorId}
+        </foreach>
+    </delete>
+
+    <select id="selectCountNum" resultType="Integer" >
+	  	select count(1) from pd_integral where type_id = #{typeId}
+    </select>
+    
+</mapper>

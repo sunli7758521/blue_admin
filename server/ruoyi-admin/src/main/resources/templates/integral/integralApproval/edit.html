@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<!--<link th:href="@{/showImg/lrtk.css}" rel="stylesheet"/>-->
+
+<title>积分审批</title>
+
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m-t" id="form-integralApproval-edit" th:object="${integralApproval}">
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批编号：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="approvalNum" name="approvalNum" th:field="*{approvalNum}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批编号：</label>
+                <div class="form-control-static" th:text="*{approvalNum}" >
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批标题：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="approvalTitle" name="approvalTitle" th:field="*{approvalTitle}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批标题：</label>
+                <div class="form-control-static" th:text="*{approvalTitle}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批内容：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="approvalContent" name="approvalContent" th:field="*{approvalContent}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批内容：</label>
+                <div class="form-control-static" th:text="*{approvalContent}" style="padding-left: 194px; padding-right: 40px">
+                </div>
+            </div>
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">关联用户id：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="userId" name="userId" th:field="*{userId}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">员工姓名：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="userName" name="userName" th:field="*{userName}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">获得积分员工：</label>
+                <div class="form-control-static" th:text="*{userName}">
+                </div>
+            </div>
+            <div class="form-group">
+                <!-- <label class="col-sm-3 control-label">员工头像：</label>
+                <div class="col-sm-8">
+                    <input id="userImg" name="userImg" th:field="*{userImg}" class="form-control" type="text">
+                </div> -->
+                <label class="col-sm-3 control-label">获得积分员工头像：</label>
+                <img th:src="*{userImg}" width="100" height="100" th:if="*{userImg != null && userImg != 0}">
+                <div th:if="*{userImg == 0 || userImg == null}">没有上传头像</div>
+            </div>
+            <!-- <div class="form-group">	
+                <label class="col-sm-3 control-label">申请人电话也是唯一标识：</label>
+                <div class="col-sm-8">
+                    <input id="userPhone" name="userPhone" th:field="*{userPhone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">所属部门：</label>
+                <div class="col-sm-8">
+                    <input id="userDept" name="userDept" th:field="*{userDept}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">部门id：</label>
+                <div class="col-sm-8">
+                    <input id="userDeptId" name="userDeptId" th:field="*{userDeptId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">职位id：</label>
+                <div class="col-sm-8">
+                    <input id="userPostId" name="userPostId" th:field="*{userPostId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">员工职位：</label>
+                <div class="col-sm-8">
+                    <input id="userPost" name="userPost" th:field="*{userPost}" class="form-control" type="text">
+                </div>
+            </div> -->
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审请人姓名：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="tiJiaoName" name="tiJiaoName" th:field="*{tiJiaoName}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">提交申请员工：</label>
+                <div class="form-control-static" th:text="*{tiJiaoName}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">申请积分：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="tiJiaoNameImg" name="tiJiaoNameImg" th:field="*{tiJiaoNameImg}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">提交申请员工头像：</label>
+                <img th:src="*{tiJiaoNameImg}" width="100" height="100" th:if="*{tiJiaoNameImg != null && tiJiaoNameImg != ''} ">
+                <div th:if="*{tiJiaoNameImg == '' || tiJiaoNameImg == null}">没有上传头像</div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">积分类型：</label>
+                <div class="form-control-static" th:text="*{typeId == 0 ? '品德A分' : (typeId == 1 ? '业绩B分' : '行为C分')}">
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label class="col-sm-3 control-label">审批图片：</label>
+                <img th:each="img : *{}" th:src="*{img}" width="100" height="100" th:if="*{img != null && img != 0} ">
+                <div th:if="*{img == 0 || img == null}">没有上传图片</div>
+            </div> -->
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">申请时间：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="sqTime" name="sqTime" th:field="*{sqTime}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">申请时间：</label>
+                <div class="form-control-static" th:text="*{#calendars.format(sqTime,'yyyy-MM-dd hh:mm:ss')}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批时间：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="spTime" name="spTime" th:field="*{spTime}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批时间：</label>
+                <div class="form-control-static" th:text="*{#calendars.format(spTime,'yyyy-MM-dd hh:mm:ss')}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批转态(0,审批中 1审批通过，2审批不通过，3撤销审批 )：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="status" name="status" th:field="*{status}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批状态：</label>
+                <div class="form-control-static" th:text="*{status == 0 ? '未审批' : (status == 1 ? '已通过' : (status == 2 ? '未通过' : '已撤销'))}" th:class="*{status == 0 ? 'label label-danger' : (status == 1 ? 'label label-primary' : (status == 2 ? 'label label-success' : 'label label-disable'))}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">申请积分：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="sqIntegral" name="sqIntegral" th:field="*{sqIntegral}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">申请积分：</label>
+                <div class="form-control-static" th:text="*{sqIntegral}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <!--<label class="col-sm-3 control-label">审批备注：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="spRemark" name="spRemark" th:field="*{spRemark}" class="form-control" type="text">-->
+                <!--</div>-->
+                <label class="col-sm-3 control-label">审批备注：</label>
+                <div class="form-control-static" th:text="*{spRemark}">
+                </div>
+            </div>
+            <!--<div class="form-group">	-->
+                <!--&lt;!&ndash;<label class="col-sm-3 control-label">申请时间：</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="col-sm-8">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input id="approvalTime" name="approvalTime" th:field="*{approvalTime}" class="form-control" type="text">&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--<label class="col-sm-2 control-label">申请时间：</label>-->
+                <!--<div class="form-control-static" th:text="*{approvalTime}">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">上传图片：</label>
+                <div class="col-sm-8" style="position: relative">
+                    <!--th:href="${img}" -->
+                    <a class="approvalImg" th:each="img:${list}" onclick="showimage(this)"><img th:src="${img}" th:width="200px"  style="margin-right: 42px;margin-bottom: 24px" ></a>
+                </div>
+
+            </div>
+		</form>
+        ﻿
+    </div>
+
+    <div th:include="include::footer"></div>
+    <!--<script th:src="@{/showImg/jquery.imgbox.pack.js}"></script>-->
+    <script type="text/javascript">
+		var prefix = ctx + "integral/integralApproval"
+		$("#form-integralApproval-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-integralApproval-edit').serialize());
+            }
+        }
+
+        // function showimage(obj){
+        //     var $_this = $(obj);
+        //     var imgurl = $_this.children("img").attr("src");
+        //
+        //     console.log(imgurl)
+        //
+        //     $("#ShowImage_Form").find("#img_show").html("<image src='"+imgurl+"' class='carousel-inner img-responsive img-rounded' />");
+        //     $("#ShowImage_Form").modal();
+        // }
+        function showimage(obj){
+            var $_this = $(obj);
+            var imgurl = $_this.children("img").attr("src");
+            console.log(imgurl)
+            layer.open({
+                type: 1,
+                title: false,
+                content: "<image src='"+imgurl+"' class='carousel-inner img-responsive img-rounded' />",
+            })
+        };
+
+	</script>
+</body>
+</html>
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片2：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg2" name="approvalImg2" th:field="*{approvalImg2}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片3：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg3" name="approvalImg3" th:field="*{approvalImg3}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片4：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg4" name="approvalImg4" th:field="*{approvalImg4}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片5：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg5" name="approvalImg5" th:field="*{approvalImg5}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片6：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg6" name="approvalImg6" th:field="*{approvalImg6}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片7：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg7" name="approvalImg7" th:field="*{approvalImg7}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片8：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg8" name="approvalImg8" th:field="*{approvalImg8}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--<label class="col-sm-3 control-label">上传图片9：</label>-->
+<!--<div class="col-sm-8">-->
+<!--<input id="approvalImg9" name="approvalImg9" th:field="*{approvalImg9}" class="form-control" type="text">-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="form-group">	-->
+<!--&lt;!&ndash;<label class="col-sm-3 control-label">备注：</label>&ndash;&gt;-->
+<!--&lt;!&ndash;<div class="col-sm-8">&ndash;&gt;-->
+<!--&lt;!&ndash;<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--<label class="col-sm-2 control-label">审批备注：</label>-->
+<!--<div class="form-control-static" th:text="*{remark}">-->
+<!--</div>-->
+<!--</div>-->

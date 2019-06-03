@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.GgTableMapper">
+    
+    <resultMap type="GgTable" id="GgTableResult">
+        <result property="gId"    column="g_id"    />
+        <result property="gName"    column="g_name"    />
+        <result property="gImgs"    column="g_imgs"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectGgTableVo">
+        select g_id, g_name, g_imgs, remark from gg_table
+    </sql>
+	
+    <select id="selectGgTableList" parameterType="GgTable" resultMap="GgTableResult">
+        <include refid="selectGgTableVo"/>
+        <where>  
+            <if test="gId != null "> and g_id = #{gId}</if>
+             <if test="gName != null  and gName != '' "> and g_name = #{gName}</if>
+             <if test="gImgs != null  and gImgs != '' "> and g_imgs = #{gImgs}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectGgTableById" parameterType="Integer" resultMap="GgTableResult">
+        <include refid="selectGgTableVo"/>
+        where g_id = #{gId}
+    </select>
+        
+    <insert id="insertGgTable" parameterType="GgTable">
+        insert into gg_table
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gId != null  ">g_id,</if>
+			<if test="gName != null  and gName != ''  ">g_name,</if>
+			<if test="gImgs != null  and gImgs != ''  ">g_imgs,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="gId != null  ">#{gId},</if>
+			<if test="gName != null  and gName != ''  ">#{gName},</if>
+			<if test="gImgs != null  and gImgs != ''  ">#{gImgs},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateGgTable" parameterType="GgTable">
+        update gg_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gName != null  and gName != ''  ">g_name = #{gName},</if>
+            <if test="gImgs != null  and gImgs != ''  ">g_imgs = #{gImgs},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where g_id = #{gId}
+    </update>
+
+	<delete id="deleteGgTableById" parameterType="Integer">
+        delete from gg_table where g_id = #{gId}
+    </delete>
+	
+    <delete id="deleteGgTableByIds" parameterType="String">
+        delete from gg_table where g_id in 
+        <foreach item="gId" collection="array" open="(" separator="," close=")">
+            #{gId}
+        </foreach>
+    </delete>
+    
+</mapper>

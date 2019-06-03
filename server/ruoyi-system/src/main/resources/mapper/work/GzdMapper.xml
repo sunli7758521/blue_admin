@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.work.mapper.GzdMapper">
+    
+    <resultMap type="Gzd" id="GzdResult">
+        <result property="gztId"    column="gzt_id"    />
+        <result property="yyImg"    column="yy_img"    />
+        <result property="yyTitle"    column="yy_title"    />
+        <result property="yyType"    column="yy_type"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="sort"    column="sort"    />
+        <result property="lotteryStatus"    column="lottery_status"    />
+    </resultMap>
+	
+	<sql id="selectGzdVo">
+        select gzt_id, yy_img, yy_title, yy_type, status, create_time, update_time, remark,sort,lottery_status from gzd
+    </sql>
+	
+    <select id="selectGzdList" parameterType="Gzd" resultMap="GzdResult">
+        <include refid="selectGzdVo"/>
+        <where>  
+            <if test="gztId != null "> and gzt_id = #{gztId}</if>
+             <if test="yyImg != null  and yyImg != '' "> and yy_img = #{yyImg}</if>
+             <if test="yyTitle != null  and yyTitle != '' "> and yy_title = #{yyTitle}</if>
+             <if test="yyType != null  and yyType != '' "> and yy_type = #{yyType}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="sort != null "> and sort = #{sort}</if>
+             <if test="lotteryStatus != null  and lotteryStatus != '' "> and lottery_status = #{lotteryStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectGzdById" parameterType="Integer" resultMap="GzdResult">
+        <include refid="selectGzdVo"/>
+        where gzt_id = #{gztId}
+    </select>
+        
+    <insert id="insertGzd" parameterType="Gzd">
+        insert into gzd
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gztId != null  ">gzt_id,</if>
+			<if test="yyImg != null  and yyImg != ''  ">yy_img,</if>
+			<if test="yyTitle != null  and yyTitle != ''  ">yy_title,</if>
+			<if test="yyType != null  and yyType != ''  ">yy_type,</if>
+			<if test="status != null  ">status,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="lotteryStatus != null  and lotteryStatus != '' ">lottery_status = #{lotteryStatus},</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="gztId != null  ">#{gztId},</if>
+			<if test="yyImg != null  and yyImg != ''  ">#{yyImg},</if>
+			<if test="yyTitle != null  and yyTitle != ''  ">#{yyTitle},</if>
+			<if test="yyType != null  and yyType != ''  ">#{yyType},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="lotteryStatus != null  and lotteryStatus != '' ">lottery_status = #{lotteryStatus},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateGzd" parameterType="Gzd">
+        update gzd
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="yyImg != null  and yyImg != ''  ">yy_img = #{yyImg},</if>
+            <if test="yyTitle != null  and yyTitle != ''  ">yy_title = #{yyTitle},</if>
+            <if test="yyType != null  and yyType != ''  ">yy_type = #{yyType},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="sort != null ">sort = #{sort},</if>
+            <if test="lotteryStatus != null  and lotteryStatus != '' ">lottery_status = #{lotteryStatus},</if>
+        </trim>
+        where gzt_id = #{gztId}
+    </update>
+
+	<delete id="deleteGzdById" parameterType="Integer">
+        delete from gzd where gzt_id = #{gztId}
+    </delete>
+	
+    <delete id="deleteGzdByIds" parameterType="String">
+        delete from gzd where gzt_id in 
+        <foreach item="gztId" collection="array" open="(" separator="," close=")">
+            #{gztId}
+        </foreach>
+    </delete>
+    
+</mapper>

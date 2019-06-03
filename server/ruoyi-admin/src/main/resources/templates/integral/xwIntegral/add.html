@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-xwIntegral-add">
+		<input id="treeIds" name="deptIds" type="hidden"   th:value="100"  />
+		<div class="form-group">
+			<label class="col-sm-3 control-label">部门名称：</label>
+			<div class="col-sm-8">
+				<!--name="deptName"-->
+				<input class="form-control" type="text"  onclick="selectDeptTree()" readonly="true" id="treeNames" th:value="${dept.deptName}" >
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">类别名称：</label>
+			<div class="col-sm-8">
+				<input id="behaviorCategory" name="behaviorCategory" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">行为标题：</label>
+			<div class="col-sm-8">
+				<input id="behaviorTitle" name="behaviorTitle" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">行为内容：</label>
+			<div class="col-sm-8">
+				<textarea id="behaviorContent" name="behaviorContent" class="form-control"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">申请方式：</label>
+			<div class="col-sm-8">
+				<select name="shenQingFangShi" class="form-control m-b-none">
+					<!--<option value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+					<option value="0">每天一次</option>
+					<option value="1">每周一次</option>
+					<option value="2">每月一次</option>
+					<option value="3">每季一次</option>
+					<option value="4">每年一次</option>
+					<option value="5">无限制</option>
+					<option value="6">仅限一次</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">最多奖励积分：</label>
+			<div class="col-sm-8">
+				<input id="zuiDuoIntegral" name="zuiDuoIntegral" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">最少奖励积分：</label>
+			<div class="col-sm-8">
+				<input id="zuiShaoIntegral" name="zuiShaoIntegral" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">显示排序：</label>
+			<div class="col-sm-8">
+				<input id="integralFenJi" name="integralFenJi" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">积分类型：</label>
+			<div class="col-sm-8">
+				<select name="typeId"   th:with="integrals=${@task.getIntegral()}" class="form-control m-b-none">
+					<option value="">所有</option>
+					<option th:each="task : ${integrals}" th:text="${task.typeName}" th:value="${task.typeId}"></option>
+				</select>
+			</div>
+		</div>
+				<!--<input id="typeId" name="typeId" th:value="3" class="form-control" type="hidden">-->
+<!--        <div class="form-group">-->
+<!--            <label class="col-sm-3 control-label">积分菜单：</label>-->
+<!--            <div class="col-sm-8">-->
+<!--                <select name="menuId"  th:with="type=${@type.getTypeName('3')}" class="form-control m-b-none">-->
+<!--                    <option th:each="menu : ${type}" th:text="${menu.typeName}" th:value="${menu.menuId}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">使用状态：</label>
+			<div class="col-sm-8">
+				<!--<input id="status" name="status" class="form-control" type="text">-->
+				<div class="onoffswitch">
+					<input type="checkbox" th:checked="true" class="onoffswitch-checkbox" id="status" name="status">
+					<label class="onoffswitch-label" for="status">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备注信息：</label>
+			<div class="col-sm-8">
+				<textarea id="remark" name="remark" class="form-control"></textarea>
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/select/select2.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script type="text/javascript">
+
+    /*用户管理-新增-选择部门树*/
+   	 function selectDeptTree() {
+        var treeId = $("#treeIds").val();
+        var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeIds").val();
+        var options = {
+            title: '选择部门',
+            width: "380",
+            url: ctx + "integral/xwIntegral/selectIntegralMenuDeptTree/" + deptId,
+            callBack: doSubmit2,
+        };
+        $.modal.openOptions(options);
+    }
+    function doSubmit2(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#treeIds").val(body.find('#treeId').val());
+        $("#treeNames").val(body.find('#treeName').val());
+
+        layer.close(index);
+    }
+
+
+    var prefix = ctx + "integral/xwIntegral"
+    $("#form-xwIntegral-add").validate({
+        rules:{
+            behaviorCategory:{
+                required:true,
+            },behaviorTitle:{
+                required:true,
+            },shenQingFangShi:{
+                required:true,
+            },zuiDuoIntegral:{
+                required:true,
+            },zuiShaoIntegral:{
+                required:true,
+            },status:{
+                required:true,
+            },menuId:{
+                required:true,
+            }
+        }
+    });
+
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            add();
+        }
+    }
+
+    function add() {
+        var deptIds = $("input[name='deptIds']").val();
+        var deptName = $("input[name='deptName']").val();
+        var behaviorCategory = $("input[name='behaviorCategory']").val();
+        var behaviorTitle = $("input[name='behaviorTitle']").val();
+        var behaviorContent = $("textarea[name='behaviorContent']").val();
+        var shenQingFangShi = $("select[name='shenQingFangShi'] option:selected").val();
+        var zuiDuoIntegral = $("input[name='zuiDuoIntegral']").val();
+        var zuiShaoIntegral = $("input[name='zuiShaoIntegral']").val();
+        var integralFenJi = $("input[name='integralFenJi']").val();
+		var typeId = $("select[name='typeId'] option:selected").val();
+        var status = $("input[name='status']").is(':checked') == true ? 0 : 1;
+        var remark = $("textarea[name='remark']").val();
+        var menuId = $("select[name='menuId'] option:selected").val();
+
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : prefix + "/add",
+            data : {
+                "deptIds": deptIds,
+                "deptName": deptName,
+                "behaviorCategory": behaviorCategory,
+                "behaviorTitle": behaviorTitle,
+                "behaviorContent": behaviorContent,
+                "shenQingFangShi": shenQingFangShi,
+                "zuiDuoIntegral": zuiDuoIntegral,
+                "zuiShaoIntegral": zuiShaoIntegral,
+                "integralFenJi": integralFenJi,
+                "remark": remark,
+                "status": status,
+                "menuId": menuId,
+				"typeId":typeId
+            },
+            async : false,
+            error : function(request) {
+                $.modal.alertError("系统错误");
+            },
+            success : function(data) {
+                $.operate.saveSuccess(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>

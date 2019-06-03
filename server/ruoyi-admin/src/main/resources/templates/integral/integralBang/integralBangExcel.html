@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+    <title>积分审批</title>
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="integralApproval-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								<label>员工姓名： </label><input type="text" name="userName"/>
+							</li>
+							<li>
+								<label>部门名称： </label><select name="depName" th:with="dept=${@dept.getDept()}" class="form-control m-b-none">
+								<option value="">所有</option>
+								<option th:each="dept : ${dept}" th:text="${dept.deptName}" th:value="${dept.deptId}"></option>
+							</select>
+							</li>
+							<!--<li>
+								<label>部门名称： </label><input type="text" name="userDept"/>
+							</li>-->
+							<li>
+								<label>职位名称： </label><select name="postName" th:with="post=${@post.getPost()}" class="form-control m-b-none">
+								<option value="">所有</option>
+								<option th:each="post : ${post}" th:text="${post.postName}" th:value="${post.postName}"></option>
+							</select>
+							</li>
+							<!--<li>
+								<label>职位名称： </label><input type="text" name="userPost"/>
+							</li>-->
+
+							<li>
+								<label>积分类型： </label>
+									<select name="typeId"   th:with="integrals=${@task.getIntegral()}" class="form-control m-b-none">
+										<option value="">所有</option>
+										<option th:each="task : ${integrals}" th:text="${task.typeName}" th:value="${task.typeId}"></option>
+									</select>
+							</li>
+
+
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="downloadExcel()" shiro:hasPermission="integral:integralBang:downld">
+					<i class="fa fa-download"></i> 下载模板
+				</a>
+				<a class="btn btn-primary" onclick="importExcel()" shiro:hasPermission="integral:integralBang:importExcel">
+					<i class="fa fa-upload" aria-hidden="true" ></i> 导入
+				</a>
+				<a class="btn btn-danger" onclick="$.table.exportExcel()" shiro:hasPermission="integral:integralBang:exportExcel">
+					<i class="fa fa-download"></i> 导出
+				</a>
+			</div>
+
+
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+    <script th:inline="javascript">
+
+        var prefix = ctx + "integral/excel";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                exportUrl: prefix + "/export",
+                modalName: "积分榜导出数据",
+                columns: [{
+                    checkbox: true
+                },
+					{
+					    formatter: function (value, row, index) {
+							return index+ 1;
+                        }
+					},
+                    {
+                        field : 'userName',
+                        title : '姓名'
+                    },
+                    {
+                        field : 'depName',
+                        title : '部门名称',
+                        width : 204
+                    },
+                    {
+                        field : 'postName',
+                        title : '职位'
+                    },
+                    {
+                        field : 'ainte',
+                        title : 'A品德总积分'
+                    },
+                    {
+                        field : 'binte',
+                        title : 'B业绩总积分'
+                    },
+                    {
+                        field : 'cinte',
+                        title : 'C行为总积分'
+                    },
+                    {
+                        field : 'maInte',
+                        title : '管理奖扣总积分'
+                    },
+                    {
+                        field : 'freeInte',
+                        title : '自由奖扣总分'
+                    },
+                    {
+                        field : 'loveInte',
+                        title : '爱心点赞总分'
+                    },
+                    {
+                        field : 'checkInte',
+                        title : '积分支票总分'
+                    },
+                    {
+                        field : 'orInte',
+                        title : '悬赏任务总分'
+                    },
+                    {
+                        field : 'basInte',
+                        title : '基础积分'
+                    },
+					{
+						field : 'assessmentInte',
+						title : '水平考核总分'
+					},
+
+                    {
+                        field : 'minusInte',
+                        title : '扣除总分数'
+                    },
+                    {
+                        field : 'count',
+                        title : '总积分'
+                    },
+                    {
+                        field : 'ranking',
+                        title : '排名',
+                        sortable: true
+                    },
+                   /* {
+                        field : 'spTime',
+                        title : '时间'
+                    },*/
+
+                    ]
+            };
+            $.table.init(options);
+        });
+
+        /** 下载导入模板*/
+        function downloadExcel() {
+            window.location.href = ctx + "common/download?fileName=积分榜模板.xls"+ "&delete=" + false;
+        }
+
+        function importExcel(){
+            window.location.href = prefix + "/impExcelPage";
+		}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.integral.mapper.IntegralMenuMapper">
+
+    <resultMap type="IntegralMenu" id="IntegralMenuResult">
+        <result property="menuId"    column="menu_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="typeCount"    column="type_count"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="deptIds"    column="dept_ids"    />
+
+        <result property="parentId"   column="parent_id"   />
+        <result property="ancestors"  column="ancestors"   />
+        <result property="orderNum"   column="order_num"   />
+    </resultMap>
+
+    <sql id="selectIntegralMenuVo">
+        select menu_id, type_name, type_id, type_count, status, create_time, update_time, remark, dept_id, post_id, dept_ids,
+          ancestors, parent_id, order_num   from integral_menu
+    </sql>
+    <resultMap id="IntegralMenuPostDeptResult" type="IntegralMenu" extends="IntegralMenuResult" >
+        <result property="deptName"    column="dept_name"    />
+        <result property="postName"    column="post_name"    />
+    </resultMap>
+
+    <select id="selectIntegralMenuList" parameterType="IntegralMenu" resultMap="IntegralMenuPostDeptResult">
+        select menu_id, type_name, type_id, type_count, m.status, m.create_time, m.update_time, m.remark, m.dept_id, m.post_id,m.dept_ids,
+        m.parent_id, m.ancestors, m.order_num ,
+        (select type_name from integral_menu where menu_id = m.parent_id ) parent_name
+        FROM integral_menu m
+        <!--<include refid="selectIntegralMenuVo"/>-->
+        <where>
+            <if test="menuId != null "> and menu_id = #{menuId}</if>
+            <if test="typeName != null  and typeName != '' ">
+                AND type_name like concat('%', #{typeName}, '%')
+            </if>
+            <if test="typeId != null "> and type_id = #{typeId}</if>
+            <if test="typeCount != null "> and type_count = #{typeCount}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptIds != null "> and dept_ids = #{deptIds}</if>
+            <if test="postId != null  "> and post_id = #{postId}</if>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId}</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors}</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum}</if>
+        </where>
+    </select>
+
+    <select id="selectIntegralMenuById" parameterType="Integer" resultMap="IntegralMenuResult">
+        <include refid="selectIntegralMenuVo"/>
+        where menu_id = #{menuId}
+    </select>
+
+    <insert id="insertIntegralMenu" parameterType="IntegralMenu">
+        insert into integral_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="menuId != null  ">menu_id,</if>
+            <if test="typeName != null  and typeName != ''  ">type_name,</if>
+            <if test="typeId != null  ">type_id,</if>
+            <if test="typeCount != null  ">type_count,</if>
+            <if test="status != null  ">status,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="deptIds != null ">dept_ids,</if>
+            <if test="postId != null  ">post_id ,</if>
+            <if test="parentId != null and parentId != 0">parent_id,</if>
+            <if test="ancestors != null and ancestors != ''">ancestors,</if>
+            <if test="orderNum != null and orderNum != ''">order_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="menuId != null  ">#{menuId},</if>
+            <if test="typeName != null  and typeName != ''  ">#{typeName},</if>
+            <if test="typeId != null  ">#{typeId},</if>
+            <if test="typeCount != null  ">#{typeCount},</if>
+            <if test="status != null  ">#{status},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="deptId != null "> #{deptId},</if>
+            <if test="deptIds != null ">#{deptIds},</if>
+            <if test="postId != null  "> #{postId},</if>
+            <if test="parentId != null and parentId != 0">#{parentId},</if>
+            <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateIntegralMenu" parameterType="IntegralMenu" >
+        update integral_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''  ">type_name = #{typeName},</if>
+            <if test="typeId != null  ">type_id = #{typeId},</if>
+            <if test="typeCount != null  ">type_count = #{typeCount},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="deptIds != null ">dept_ids = #{deptIds},</if>
+            <if test="postId != null  ">post_id = #{postId},</if>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+            <if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+        </trim>
+        where menu_id = #{menuId}
+    </update>
+
+    <delete id="deleteIntegralMenuById" parameterType="Integer">
+        delete from integral_menu where menu_id = #{menuId}
+    </delete>
+
+    <delete id="deleteIntegralMenuByIds" parameterType="String">
+        delete from integral_menu where menu_id in
+        <foreach item="menuId" collection="array" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </delete>
+
+    <!--加载树形结构-->
+    <select id="selectintegralMenuById"  resultMap="IntegralMenuResult" >
+		 select menu_id, type_name, type_id, type_count, m.status, m.create_time, m.update_time, m.remark, m.dept_id, m.post_id,
+        m.parent_id, m.ancestors, m.order_num ,
+        (select type_name from integral_menu where menu_id = m.parent_id ) parent_name
+        FROM integral_menu m
+        where m.menu_id = #{parentId}
+    </select>
+
+    <!--校验菜单是否唯一-->
+    <select id="checkDeptNameUnique" resultMap="IntegralMenuResult" >
+        <include refid="selectIntegralMenuVo"/>
+        WHERE type_name = #{typeName} AND parent_id = #{parentId}
+    </select>
+
+    <!--查询parentName-->
+    <select id="selectIntegralMenuParentName" resultType="String" >
+        select type_name from integral_menu where menu_id = #{parentId}
+    </select>
+
+    <select id="selectMenuById" resultMap="IntegralMenuResult" >
+        select menu_id, type_name, type_id, type_count, m.status, m.create_time, m.update_time, m.remark, m.dept_id, m.post_id,
+        m.parent_id, m.ancestors, m.order_num ,
+        (select type_name from integral_menu where menu_id = m.parent_id ) parent_name
+        FROM integral_menu m where menu_id = #{parentId}
+    </select>
+
+    <select id="getTypeName" resultMap="IntegralMenuResult" >
+        <include refid="selectIntegralMenuVo"/>
+         where type_id = #{typeId}
+    </select>
+</mapper>
